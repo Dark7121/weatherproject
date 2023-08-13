@@ -20,6 +20,7 @@ distlib==0.3.6
 dj-database-url==2.0.0
 dj-email-url==1.0.6
 Django==3.2.20
+django_blog==0.1.1
 django-cache-url==3.4.4
 django-cors-headers==4.1.0
 dulwich==0.21.5
