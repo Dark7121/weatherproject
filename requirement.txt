@@ -34,7 +34,7 @@ h11==0.14.0
 h5py==3.8.0
 html5lib==1.1
 
-importlib-metadata==6.8.0
+importlib-metadata==6.7.0
 
 json5==0.9.14
 jsonpointer==2.3
