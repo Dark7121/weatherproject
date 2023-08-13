@@ -9,7 +9,7 @@ asgiref==3.7.2
 asttokens==2.2.1
 astunparse==1.6.3
 async-generator==1.10
-
+pip==23.2.1
 async-timeout==4.0.2
 
 
