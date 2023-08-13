@@ -9,7 +9,7 @@ asgiref==3.7.2
 asttokens==2.2.1
 astunparse==1.6.3
 async-generator==1.10
-pip==23.2.1
+
 async-timeout==4.0.2
 
 
@@ -19,7 +19,7 @@ debugpy==1.6.7
 distlib==0.3.6
 dj-database-url==2.0.0
 dj-email-url==1.0.6
-Django==4.0.0
+Django==3.2.20
 django-cache-url==3.4.4
 django-cors-headers==4.2.0
 dulwich==0.21.5
