@@ -1,20 +1,19 @@
 databases:
-  - name: weatherdb
-    databaseName: weatherproject  # Ensure this matches your Django settings
+  - name: weatherproject
+    databaseName: weatherpeoject
     user: weatherproject
 
 services:
   - type: web
     name: mysite
-    runtime: python
+    plan: Starter  # Use the free plan
+    runtime: python  # Set the correct runtime
     buildCommand: "./build.sh"
     startCommand: "gunicorn weatherproject.wsgi:application"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: weatherdb
+          name: weatherproject
           property: connectionString
       - key: WEB_CONCURRENCY
-        value: 1  # For free instance types, only 1 web concurrency is supported
-
-# Optional: If you need additional environment variables, add them here
+        value: 1  # Adjust the concurrency based on the free plan's limits
