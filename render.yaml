@@ -6,7 +6,7 @@ databases:
 services:
   - type: web
     name: mysite
-    runtime: python
+    plan: Starter  # Use the free plan
     buildCommand: "./build.sh"
     startCommand: "gunicorn weatherproject.wsgi:application"
     envVars:
@@ -14,7 +14,5 @@ services:
         fromDatabase:
           name: weatherproject
           property: connectionString
-      - key: 712258
-        generateValue: true
       - key: WEB_CONCURRENCY
-        value: 4
+        value: 1  # Adjust the concurrency based on the free plan's limits
