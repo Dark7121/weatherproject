@@ -1,13 +1,12 @@
 databases:
   - name: weatherproject
-    databaseName: weatherpeoject
+    databaseName: weatherproject
     user: weatherproject
 
 services:
   - type: web
     name: mysite
-    plan: Starter  # Use the free plan
-    runtime: python  # Set the correct runtime
+    runtime: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn weatherproject.wsgi:application"
     envVars:
@@ -16,4 +15,4 @@ services:
           name: weatherproject
           property: connectionString
       - key: WEB_CONCURRENCY
-        value: 1  # Adjust the concurrency based on the free plan's limits
+        value: 1  # Limited to 1 instance for free tier
