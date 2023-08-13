@@ -2,7 +2,6 @@ databases:
   - name: weatherdb
     databaseName: weatherproject  # Ensure this matches your Django settings
     user: weatherproject
-    password: 
 
 services:
   - type: web
