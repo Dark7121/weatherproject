@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'weatherproject.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Feel free to alter this value to suit your needs.
-        default='postgresql://postgres:postgres@localhost:5432/weatherproject',
+        default='postgres://weatherproject_user:97KlSGKqncjhcPdBZm0zGhIgHYU0Nh0C@dpg-cjcg7a3bq8nc73aisip0-a.singapore-postgres.render.com/weatherproject',
         conn_max_age=600
     )
 }
