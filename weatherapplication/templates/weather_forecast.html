@@ -1,0 +1,332 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<style>
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        background-color: #fafafa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        transition: background 0.2s linear;
+        color: #000;
+    }
+    
+    body.dark {
+        background: #292C35;
+        color: white;
+    }
+    
+    .checkbox {
+        opacity: 0;
+        position: absolute;
+    }
+    
+    .label {
+        background-color: #111;
+        border-radius: 50px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px;
+        position: relative;
+        height: 22px;
+        width: 43.5px;
+        transform: scale(1.0);
+    }
+    
+    .switch-container {
+        position: absolute;
+        top: 66px; /* Adjust the top position as needed */
+        right: 20px; /* Adjust the right position as needed */
+    }
+    
+    .label .ball {
+        background-color: #fff;
+        border-radius: 50%;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        height: 19px;
+        width: 20px;
+        transform: translateX(0px);
+        transition: transform 0.2s linear;
+    }
+    
+    .checkbox:checked + .label .ball {
+        transform: translateX(19.5px);
+    }
+    
+    .fa-moon {
+        color: #f1c40f;
+    }
+    
+    .fa-sun {
+        color: #f39c12;
+    }
+    
+    header {
+        background-color: #dbb92f; /* Light mode background color */
+        color: #292C35;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+        padding: 0 20px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+    }
+    
+    body.dark header {
+        background-color: #1f5ab3; /* Dark mode background color */
+        color: #fafafa;
+    }
+    
+    /* Navigation Styles */
+    nav {
+        display: flex;
+        align-items: center;
+    }
+    
+    nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+    
+    nav li {
+        margin-right: 25px;
+    }
+    
+    nav a {
+        color: white; /* Set the text color to white for both light and dark modes */
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    /* Dropdown Styles */
+    .dropdown {
+        position: relative;
+    }
+    
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #111;
+        min-width: 150px;
+        border-radius: 5px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    }
+    
+    .dropdown-content a {
+        color: #fff; /* Set dropdown menu item text color to white */
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+    
+    .dropdown-content a:hover {
+        background-color: #444;
+    }
+    
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+    
+    .portfolio-icon {
+        border-radius: 50%;
+        max-width: 50px; /* Maximum width for the icon */
+        max-height: 50px; /* Maximum height for the icon */
+        transition: transform 0.2s, filter 0.2s; /* Add a transition on hover to grow the icon */
+    }
+    
+    .portfolio-icon:hover {
+        transform: scale(1.1); /* Apply a slight scale on hover for glowing effect */
+        filter: brightness(1.5); /* Increase brightness on hover for glowing effect */
+    }
+    
+    /* Add a glowing effect on header links when hovered */
+    nav a:hover {
+        animation: glow 1s infinite alternate;
+    }
+    
+    /* Keyframes for the glowing effect */
+    @keyframes glow {
+        from {
+            text-shadow: none;
+        }
+        to {
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #f39c12, 0 0 70px #f39c12, 0 0 80px #f39c12, 0 0 100px #f39c12, 0 0 150px #f39c12;
+        }
+    }
+
+.bgimg {
+  height: 100%;
+  width: 100%;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  color: white;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 25px;
+}
+
+.topleft {
+  position: absolute;
+  top: 0;
+  left: 16px;
+}
+
+.bottomleft {
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+}
+
+.middle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+hr {
+  margin: auto;
+  width: 40%;
+}
+
+.bottom-down{
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    padding: 15px;
+    right: 0;
+    left: 0;
+  }
+
+</style>
+</head>
+<body class="dark">
+    <header>
+
+        <a href="/">
+          <img class="portfolio-icon" src="{{ STATIC_URL }}/static/img/Darkmaster7121.ico">
+        </a>
+    
+        <nav>
+          <ul>
+            <li class="dropdown">
+              <a href="#">Weather</a>
+              <div class="dropdown-content">
+                <a href="current">Current Weather</a>
+                <a href="forecast">Weather Forecast</a>
+                <a href="historical">Historical Weather</a>
+              </div>
+            </li>
+            <li class="dropdown">
+              <a href="#">Dashboard</a>
+              <div class="dropdown-content">
+                <a href="current">Current Weather</a>
+                <a href="forecast">Weather Forecast</a>
+                <a href="historical">Historical Weather</a>
+              </div>
+            </li>
+            <li><a href="/#about-us">About Us</a></li>
+            <li><a href="sign-up">Sign Up</a></li>
+            <li><a href="log-in">Log In</a></li>
+          </ul>
+        </nav>
+        <div class="switch-container">
+            <input type="checkbox" class="checkbox" id="chk" />
+            <label class="label" for="chk">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+                <div class="ball"></div>
+            </label>
+        </div>
+      </header>
+<div class="bgimg">
+    <img class="bgimg" src="{{ STATIC_URL }}/static/img/thunderstorm.jpg">
+  <div class="middle">
+    <h1>COMING SOON</h1>
+    <hr>
+    <p id="demo" style="font-size:30px"></p>
+  </div>
+</div>
+<footer class="bottom-down">
+    <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
+  </footer>
+<script>
+// Set the date we're counting down to
+var countDownDate = new Date("Aug 27, 2023 10:30:00").getTime();
+
+// Update the count down every 1 second
+var countdownfunction = setInterval(function() {
+
+  // Get todays date and time
+  var now = new Date().getTime();
+  
+  // Find the distance between now an the count down date
+  var distance = countDownDate - now;
+  
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+  // Output the result in an element with id="demo"
+  document.getElementById("demo").innerHTML = days + "d " + hours + "h "
+  + minutes + "m " + seconds + "s ";
+  
+  // If the count down is over, write some text 
+  if (distance < 0) {
+    clearInterval(countdownfunction);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+</script>
+<script>
+    const chk = document.getElementById('chk');
+    const body = document.body;
+
+    chk.addEventListener('change', () => {
+      body.classList.toggle('dark');
+      body.classList.toggle('light-mode');
+
+      const weatherBoxes = document.querySelectorAll('.weather-container');
+      weatherBoxes.forEach(box => {
+        box.classList.toggle('dark', body.classList.contains('dark'));
+      });
+
+      // Scroll to the target element
+      const scrollTarget = document.getElementById('scroll-target');
+      if (scrollTarget) {
+        scrollTarget.scrollIntoView({ behavior: 'smooth' });
+  }
+    });
+  </script>
+
+</body>
+</html>

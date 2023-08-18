@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Production Page</title>
@@ -11,6 +10,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     * {
       box-sizing: border-box;
     }
@@ -154,6 +156,7 @@
     }
 
     .portfolio-icon {
+      border-radius: 50%;
       max-width: 50px; /* Maximum width for the icon */
       max-height: 50px; /* Maximum height for the icon */
       transition: transform 0.2s, filter 0.2s; /* Add a transition on hover to grow the icon */
@@ -179,63 +182,65 @@
       }
     }
 
-    .carousel {
-      margin-top: 80px; /* Adjust the margin-top for the slider */
-    }
-
-    @media (max-width: 560px) {
-      /* Adjustments for smaller screens */
-      header {
-        padding: 0 10px;
+    @media (max-width: 768px) {
+      /* Adjust styles for tablets and smaller screens */
+      body {
+        font-size: 16px; /* Adjust font size for better readability */
+        height: auto; /* Allow body to expand based on content */
       }
-
-      nav {
-        display: flex;
-        align-items: center;
+    
+      .content-container {
+        top: 0; /* Adjust the top position of the content container */
+        padding: 20px; /* Add some padding for smaller screens */
       }
-  
-      nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
+    
+      .slider-container {
+        top: 0px;
       }
-  
-      nav li {
-        margin-right: 10px;
+    
+      .carousel-item img {
+        max-height: 0; /* Adjust image height for smaller screens */
       }
-  
-      nav a {
-        color: white; /* Set the text color to white for both light and dark modes */
-        text-decoration: none;
-        font-size: 12px;
-        font-weight: bold;
-      }
-
-      .carousel {
-        margin-top: 0; /* Adjust the margin-top for the slider */
-      }
-
-      .carousel-inner .carousel-item img {
-        margin-top: 273px;
-        max-height: 500px;
-      }
-
+    
       .weather-container {
+        top: 0; /* Adjust the top position of the weather container */
         flex-direction: column;
         align-items: center;
-        margin-top: 20px;
+        margin-top: 0;
       }
-
+    
       .weather-box {
-        margin: 10px;
+        padding: 20px;
+        margin: 0;
+        height: auto; /* Allow boxes to expand based on content */
       }
-
-      .portfolio-icon {
-        max-width: 40px;
-        max-height: 40px;
+    
+      .bottom-container {
+        margin-top: 999px;
       }
-      /* ... Add more responsive adjustments as needed ... */
+    
+      /* Adjust navigation styles for smaller screens */
+    }
+    
+    @media (max-width: 576px) {
+      /* Adjust styles for mobile devices */
+      body {
+        font-size: 14px; /* Further adjust font size */
+      }
+    
+      .slider-container {
+        margin-top: 0; /* Further adjust the top position of the slider */
+      }
+    
+      .carousel-item img {
+        max-height: 150px; /* Further adjust image height for smaller screens */
+      }
+    
+      .bottom {
+        margin-top: 100px; /* Further adjust margin for the about us section */
+      }
+    
+      /* Additional adjustments as needed */
     }
 
     /* Additional CSS rules */
@@ -257,7 +262,7 @@
     /* Adjust the slider position */
     .slider-container {
       position: absolute;
-      top: 90px;
+      top: 70px;
       left: 0;
       width: 100%;
       z-index: 1;
@@ -289,6 +294,7 @@
       text-align: center;
       box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
       color: white;
+      height: 400px;
     }
 
     .weather-container.dark {
@@ -310,10 +316,54 @@
       text-align: center;
     }
 
+    .bottom-container {
+      display: flex;
+      top: 1500px;
+      justify-content: center;
+      text-align: center;
+      background-color: #281d46;
+      color: white;
+      width: 100%;
+      height: 500px;
+      position: absolute;
+      bottom: 0;
+      z-index: 3;
+    }
+    
+    .bottom {
+      padding: 5px;
+      width: 100%;
+      max-width: 1200px; /* Adjust the maximum width as needed */
+    }
+    
+
+    .bottom-left{
+      position: absolute;
+      left: 40px;
+      text-align: left;
+      padding: 5px;
+    }
+
+    .bottom-right{
+      position: absolute;
+      right: 40px;
+      text-align: right;
+      padding: 15px;
+    }
+
+    .bottom-down{
+      position: absolute;
+      bottom: 0;
+      text-align: center;
+      padding: 15px;
+      right: 0;
+      left: 0;
+    }
+
   </style>
 
 </head>
-<body class="light-mode">
+<body class="dark">
 
   <header>
 
@@ -326,16 +376,22 @@
         <li class="dropdown">
           <a href="#">Weather</a>
           <div class="dropdown-content">
-            <!-- Add dropdown menu items here -->
-            <a href="#">Today</a>
-            <a href="#">Forecast</a>
-            <a href="#">History</a>
+            <a href="current">Current Weather</a>
+            <a href="forecast">Weather Forecast</a>
+            <a href="historical">Historical Weather</a>
           </div>
         </li>
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Sign Up</a></li>
-        <li><a href="#">Log In</a></li>
+        <li class="dropdown">
+          <a href="#">Dashboard</a>
+          <div class="dropdown-content">
+            <a href="current">Current Weather</a>
+            <a href="forecast">Weather Forecast</a>
+            <a href="historical">Historical Weather</a>
+          </div>
+        </li>
+        <li><a href="#about-us">About Us</a></li>
+        <li><a href="sign-up">Sign Up</a></li>
+        <li><a href="log-in">Log In</a></li>
       </ul>
     </nav>
     <div class="switch-container">
@@ -382,113 +438,164 @@
       </div>
     </div>
       <div id='centered-text' class="centered-text">
-      <h2>City Name: <strong>{{ ci.city }}, {{report.country_code}}</strong> </h2>
+      <h3>City Name: <strong>{{ ci.city }}, {{ci.country}}</strong> </h3>
       </div>
       <div class="weather-container">
         <div class="weather-box">
           <img id="weather-icon" src="" alt="weather icon">
-          <h2>Current Weather</h2>
+          <h3>Current Weather</h3>
           
-          <p>Coordinate: <span>{{report.cor}}</span> </p>
-          <p>Temperature: <span>{{report.temp}}</span> </p>
-          <p>Pressure: <span>{{report.pressure}}</span> </p>
-          <p>Humidity: <span>{{report.humidity}}</span> </p>
+          <p>Date: <span>{{report.date}}</span> </p>
+          <p>Temperature: <span>{{report.temp}}&deg;C</span> </p>
+          <p>Feels Like: <span>{{report.feels_like}}</span> </p>
+          <p>Humidity: <span>{{report.humidity}}%</span> </p>
+          <p>Wind Speed: <span>{{report.wind}} km/h</span> </p>
           <p>Description: <span>{{report.description}}</span> </p>
         </div>
         <div class="weather-box">
           <img id="forecast-weather-icon" src="" alt="weather icon">
-          <h2>Weather Forecast</h2>
-          <p>Date: <span>{{forecast_data.data}}</span> </p>
-          <p>Temperature: <span>{{forecast_data.temp}}</span> </p>
-          <p>Humidity: <span>{{forecast_data.humidity}}</span> </p>
-          <p>Feels Like: <span>{{forecast_data.feels_like}}</span> </p>
+          <h3>Weather Forecast</h3>
+          <p>Date: <span>{{report.f_date}}</span> </p>
+          <p>Temperature: <span>{{report.f_temp}}&deg;C</span> </p>
+          <p>Feels Like: <span>{{report.f_feels_like}}&deg;C</span> </p>
+          <p>Humidity: <span>{{report.f_humidity}}%</span> </p>
+          <p>Wind Speed: <span>{{report.f_wind}} km/h</span> </p>
+          <p>Description: <span>{{report.f_description}}</span> </p>
         </div>
         <div class="weather-box">
           <img id="historical-weather-icon" src="" alt="weather icon">
-          <h2>Historical Weather</h2>
-          <p>Date: <span>{{historical_data.timestamp}}</span> </p>
-          <p>Temperature: <span>{{historical_data.temp}}</span> </p>
-          <p>Humidity: <span>{{historical_data.humidity}}</span> </p>
-          <p>Condition: <span>{{historical_data.condition}}</span> </p>
-          <p>Wind: <span>{{historical_data.wind}}</span> </p>
+          <h3>Historical Weather</h3>
+          <p>Date: <span>{{historical_data.date}}</span> </p>
+          <p>Temperature: <span>{{historical_data.temp}}&deg;C</span> </p>
+          <p>Feels Like: <span>{{historical_data.feels_like}}&deg;C</span> </p>
+          <p>Humidity: <span>{{historical_data.humidity}}%</span> </p>
+          <p>Wind: <span>{{historical_data.wind}} km/h</span> </p>
+          <p>Description: <span>{{historical_data.description}}</span> </p>
         </div>
       </div>
     </div>
+  </div>
+  <div id="about-us" class="bottom-container">
+    <div class="bottom">
+      <h3>About Us</h3>
+      <p> Hello, It's a collaborative project between an aspiring Python Developer and a Power BI Developer. You can check your current weather, historical weather,<br>
+        and weather forecasting. If you like our project, please give us a star on GitHub. For any inquiry, please contact us. Thank you for visiting our website.
+      </p>
+      <p> Below are our personal details and links to our GitHub and LinkedIn accounts, along with our resumes. </p>
+      <div class="bottom-left">
+        <img src="{{ STATIC_URL }}/static/img/Darkmaster7121.ico" alt="Avatar" style="border-radius: 50%; max-height: 100px; max-width: 100px;">
+        <h3>Abhijit Das</h3>
+        <p>Web Development || Java || MySQL || Python Developer ||<br>Django || Machine Learning || Deep Learning || AI Enthusiast</p>
+        <div>
+          <img src="{{ STATIC_URL }}/static/img/GitHub-Mark.png" alt="GitHub" style="border-radius: 70%; max-height: 30px; max-width: 30px;">
+          <a href="https://github.com/Dark7121?tab=repositories">GitHub</a>
+        </div>
+        <div>
+          <img src="{{ STATIC_URL }}/static/img/linkedin-icon.jpg" alt="LinkedIn" style="border-radius: 20%; max-height: 30px; max-width: 30px;">
+          <a href="https://www.linkedin.com/in/abhijit-das-530870194/">LinkedIn</a>
+        </div>
+      </div>
+      <div class="bottom-right">
+        <img src="{{ STATIC_URL }}/static/img/Darkmaster7121.ico" alt="Avatar" style="border-radius: 50%; max-height: 100px; max-width: 100px;">
+        <h3>Sabyasachi Bhattacharjee</h3>
+        <p> Data Analyst || Business Intelligence || Power BI || DAX || Power Query ||<br>ETL Piplines || MySQL || Python || Data Visualization || Machine Learning</p>
+        <div>
+          <img src="{{ STATIC_URL }}/static/img/GitHub-Mark.png" alt="GitHub" style="border-radius: 70%; max-height: 30px; max-width: 30px;">
+          <a href="https://github.com/Sabya02?tab=repositories">GitHub</a>
+        </div>
+        <div>
+          <img src="{{ STATIC_URL }}/static/img/linkedin-icon.jpg" alt="LinkedIn" style="border-radius: 20%; max-height: 30px; max-width: 30px;">
+          <a href="https://www.linkedin.com/in/sabyasachi-bhattacharjee/">LinkedIn</a>
+        </div>
+      </div>
+      <div>
+        <footer class="bottom-down">
+          <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
+        </footer> 
+    </div>
+    </div>   
+  </div>
+    <script>
+      const chk = document.getElementById('chk');
+      const body = document.body;
   
-
-  <script>
-    const chk = document.getElementById('chk');
-    const body = document.body;
-
-    chk.addEventListener('change', () => {
-      body.classList.toggle('dark');
-      body.classList.toggle('light-mode');
-
-      const weatherBoxes = document.querySelectorAll('.weather-container');
-      weatherBoxes.forEach(box => {
-        box.classList.toggle('dark', body.classList.contains('dark'));
+      chk.addEventListener('change', () => {
+        body.classList.toggle('dark');
+        body.classList.toggle('light-mode');
+  
+        const weatherBoxes = document.querySelectorAll('.weather-container');
+        weatherBoxes.forEach(box => {
+          box.classList.toggle('dark', body.classList.contains('dark'));
+        });
+  
+        // Scroll to the target element
+        const scrollTarget = document.getElementById('scroll-target');
+        if (scrollTarget) {
+          scrollTarget.scrollIntoView({ behavior: 'smooth' });
+    }
       });
-
-      // Scroll to the target element
-      const scrollTarget = document.getElementById('scroll-target');
-      if (scrollTarget) {
-        scrollTarget.scrollIntoView({ behavior: 'smooth' });
-  }
-    });
-  </script>
-
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-
-
-  <script>
-    // Assuming you have a JavaScript variable named report with icon_url property
-    var report = {
-      icon_url: "{{report.icon}}" // Example icon URL
-    };
-    // Get the image element
-    var weatherIcon = document.getElementById("weather-icon");
-    // Set the src attribute to the icon URL
-    weatherIcon.src = "https://openweathermap.org/img/wn/" + report.icon_url + "@2x.png";
-    var historical_data = {
-      weather_icon: "{{historical_data.weather_icon}}" // Example icon URL
-    };
-  </script>
-  
-  <script>
-    var historical_data = {
-      weather_icon: "{{ historical_data.weather_icon }}" // Example icon URL
-    };
-    var hweatherIcon = document.getElementById("historical-weather-icon");
-    var iconUrl = "https:" + historical_data.weather_icon;
-    hweatherIcon.src = iconUrl;
-  </script>
-  
-  <script>
-    var forecast_data = {
-      weather_icon: "{{ forecast_data.icon }}" // Example icon URL
-    };
-    var fweatherIcon = document.getElementById("forecast-weather-icon");
-    var iconUrl = "https://openweathermap.org/img/wn/" + forecast_data.weather_icon + "@2x.png";
-    fweatherIcon.src = iconUrl;
-  </script>
-
-  <script>
-        const successCallback = (position) => {
-          console.log(position);
-        };
-    
-        const errorCallback = (error) => {
-          console.log(error);
-    
-    
-        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-        window.location.href = `/weather?latitude=${latitude}&longitude=${longitude}`;
-        };
-  
     </script>
   
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  
+  
+  
+    <script>
+      // Assuming you have a JavaScript variable named report with icon_url property
+      var report = {
+        icon_url: "{{report.icon}}" // Example icon URL
+      };
+      // Get the image element
+      var weatherIcon = document.getElementById("weather-icon");
+      var iconUrl = "https:" + report.icon_url;
+      weatherIcon.src = iconUrl;
+    </script>
+    
+    <script>
+      var historical_data = {
+        weather_icon: "{{ historical_data.weather_icon }}" // Example icon URL
+      };
+      var hweatherIcon = document.getElementById("historical-weather-icon");
+      var iconUrl = "https:" + historical_data.weather_icon;
+      hweatherIcon.src = iconUrl;
+    </script>
+    
+    <script>
+      var forecast_data = {
+        weather_icon: "{{ report.f_icon }}" // Example icon URL
+      };
+      var fweatherIcon = document.getElementById("forecast-weather-icon");
+      var iconUrl = "https:" + forecast_data.weather_icon;
+      fweatherIcon.src = iconUrl;
+    </script>
+
+  <script>
+    const successCallback = (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+  
+      // Reload the page with new latitude and longitude
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('latitude', latitude);
+      urlParams.set('longitude', longitude);
+      window.location.search = urlParams.toString();
+  };
+  
+  const errorCallback = (error) => {
+      console.log(error);
+  };
+  
+  // Check if the latitude and longitude query parameters are missing
+  const urlParams = new URLSearchParams(window.location.search);
+  const latitudeParam = urlParams.get('latitude');
+  const longitudeParam = urlParams.get('longitude');
+  
+  if (!latitudeParam || !longitudeParam) {
+      navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+  }
+  
+  </script>
 </body>
 </html>

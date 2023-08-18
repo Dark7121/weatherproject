@@ -5,7 +5,7 @@ databases:
 
 services:
   - type: web
-    name: mysite
+    name: weatherproject
     plan: Starter  # Use the free plan
     runtime: python  # Set the correct runtime
     buildCommand: "./build.sh"
