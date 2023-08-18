@@ -474,6 +474,7 @@
         </div>
       </div>
     </div>
+<<<<<<< HEAD
   </div>
   <div id="about-us" class="bottom-container">
     <div class="bottom">
@@ -515,6 +516,8 @@
     </div>
     </div>   
   </div>
+=======
+>>>>>>> 121e4f5d84e68c0d1da06f55a5189a5460845850
     <script>
       const chk = document.getElementById('chk');
       const body = document.body;
@@ -549,8 +552,16 @@
       };
       // Get the image element
       var weatherIcon = document.getElementById("weather-icon");
+<<<<<<< HEAD
       var iconUrl = "https:" + report.icon_url;
       weatherIcon.src = iconUrl;
+=======
+      // Set the src attribute to the icon URL
+      weatherIcon.src = "https://openweathermap.org/img/wn/" + report.icon_url + "@2x.png";
+      var historical_data = {
+        weather_icon: "{{historical_data.weather_icon}}" // Example icon URL
+      };
+>>>>>>> 121e4f5d84e68c0d1da06f55a5189a5460845850
     </script>
     
     <script>
@@ -564,10 +575,17 @@
     
     <script>
       var forecast_data = {
+<<<<<<< HEAD
         weather_icon: "{{ report.f_icon }}" // Example icon URL
       };
       var fweatherIcon = document.getElementById("forecast-weather-icon");
       var iconUrl = "https:" + forecast_data.weather_icon;
+=======
+        weather_icon: "{{ forecast_data.icon }}" // Example icon URL
+      };
+      var fweatherIcon = document.getElementById("forecast-weather-icon");
+      var iconUrl = "https://openweathermap.org/img/wn/" + forecast_data.weather_icon + "@2x.png";
+>>>>>>> 121e4f5d84e68c0d1da06f55a5189a5460845850
       fweatherIcon.src = iconUrl;
     </script>
 
