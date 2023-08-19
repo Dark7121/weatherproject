@@ -53,89 +53,150 @@ def get_location_info(latitude, longitude, api_key):
                     'postcode': postcode
                 }
     return None
+        
+def search_result(request):
+    report = {}
+    forecast_data = {}
+    historical_data = {}
+    
+    if request.method == 'POST':
+        city_name = request.POST.get('city')
+    else:
+        city_name = request.GET.get('city')
 
-'''
-# current weather
-if latitude and longitude:
-    current_url = f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API_KEY}&units=metric"
-    try:
-        response = requests.get(current_url).json()
-        report = {
-            'city': city_name,
-            'country_code': response['sys']['country'],
-            'cor': f"Lat: {response['coord']['lat']}, Lon: {response['coord']['lon']}",
-            'temp': response['main']['temp'],
-            'pressure': response['main']['pressure'],
-            'humidity': response['main']['humidity'],
-            'main': response['weather'][0]['main'],
-            'description': response['weather'][0]['description'],
-            'icon': response['weather'][0]['icon'],
-        }
-    except requests.exceptions.RequestException as e:
-        print("Error making request:", e)
-    except ValueError as e:
-        print("Error decoding JSON:", e)
-else:
-    current_url = f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&units=metric&appid={API_KEY}"
-    try:
-        response = requests.get(current_url).json()
-        report = {
-            'city': city_name,
-            'country_code': response['sys']['country'],
-            'cor': f"Lat: {response['coord']['lat']}, Lon: {response['coord']['lon']}",
-            'temp': response['main']['temp'],
-            'pressure': response['main']['pressure'],
-            'humidity': response['main']['humidity'],
-            'main': response['weather'][0]['main'],
-            'description': response['weather'][0]['description'],
-            'icon': response['weather'][0]['icon'],
-        }
-    except requests.exceptions.RequestException as e:
-        print("Error making request:", e)
-    except ValueError as e:
-        print("Error decoding JSON:", e)
+    if city_name:
+        weather_url = f"https://api.weatherapi.com/v1/current.json?key={NEW_API}&q={city_name}&aqi=yes"
+        try:
+            response = requests.get(weather_url).json()
+            report = {
+                'city': response['location']['name'],
+                'country': response['location']['country'],
+                'date': response['location']['localtime'],
+                'temp': response['current']['temp_c'],
+                'feels_like': response['current']['feelslike_c'],
+                'humidity': response['current']['humidity'],
+                'wind': response['current']['wind_kph'],
+                'description': response['current']['condition']['text'],
+                'icon': response['current']['condition']['icon'],
+            }
+        except requests.exceptions.RequestException as e:
+            print("Error making request:", e)
+        except ValueError as e:
+            print("Error decoding JSON:", e)
+        report_date_str = report['date']
+        report_date = datetime.strptime(report_date_str, '%Y-%m-%d %H:%M')
+        search_hour = report_date.hour
+
+        forecast_url = f"http://api.weatherapi.com/v1/forecast.json?key={NEW_API}&q={city_name}&days=2&aqi=yes&alerts=yes"
+        try:
+            forecast_response = requests.get(forecast_url).json()
+            forecast_data = {
+                'f_date': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['time'],
+                'f_temp': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['temp_c'],
+                'f_humidity': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['humidity'],
+                'f_feels_like': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['feelslike_c'],
+                'f_icon': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['condition']['icon'],
+                'f_wind': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['wind_kph'],
+                'f_description': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['condition']['text'],
+            }
+        except requests.exceptions.RequestException as e:
+            print("Error making request:", e)
+        except ValueError as e:
+            print("Error decoding JSON:", e)    
+        
+        historical_url = f"http://api.weatherapi.com/v1/history.json?key={NEW_API}&q={city_name}&dt={yesterday_datetime}"
+        try:
+            historical_response = requests.get(historical_url).json()
+            historical_data = {
+                'date': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['time'],
+                'temp': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['temp_c'],
+                'feels_like': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['feelslike_c'],
+                'humidity': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['humidity'],
+                'wind': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['wind_kph'],
+                'description': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['condition']['text'],
+                'sunrise': historical_response['forecast']['forecastday'][0]['astro']['sunrise'],
+                'sunset': historical_response['forecast']['forecastday'][0]['astro']['sunset'],
+                'moonrise': historical_response['forecast']['forecastday'][0]['astro']['moonrise'],
+                'moonset': historical_response['forecast']['forecastday'][0]['astro']['moonset'],
+                'moon_phase': historical_response['forecast']['forecastday'][0]['astro']['moon_phase'],
+                'moon_illumination': historical_response['forecast']['forecastday'][0]['astro']['moon_illumination'],
+                'weather_icon': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['condition']['icon'],
+            }
+        except requests.exceptions.RequestException as e:
+            print("Error making request:", e)
+        except ValueError as e:
+            print("Error decoding JSON:", e)
             
-    
-# historical weather
-historical_url = f"http://api.weatherapi.com/v1/history.json?key={NEW_API}&q={city_name}&dt={yesterday_datetime}"
-try:
-        historical_response = requests.get(historical_url).json()
-        historical_data = {
-                    'date': historical_response['location']['localtime'],
-                    'temp': historical_response['forecast']['forecastday'][0]['day']['avgtemp_c'],
-                    'condition': historical_response['forecast']['forecastday'][0]['day']['condition']['text'],
-                    'humidity': historical_response['forecast']['forecastday'][0]['day']['avghumidity'],
-                    'wind': historical_response['forecast']['forecastday'][0]['day']['maxwind_kph'],
-                    'sunrise': historical_response['forecast']['forecastday'][0]['astro']['sunrise'],
-                    'sunset': historical_response['forecast']['forecastday'][0]['astro']['sunset'],
-                    'moonrise': historical_response['forecast']['forecastday'][0]['astro']['moonrise'],
-                    'moonset': historical_response['forecast']['forecastday'][0]['astro']['moonset'],
-                    'moon_phase': historical_response['forecast']['forecastday'][0]['astro']['moon_phase'],
-                    'moon_illumination': historical_response['forecast']['forecastday'][0]['astro']['moon_illumination'],
-                    'weather_icon': historical_response['forecast']['forecastday'][0]['day']['condition']['icon'],
-                }
-except requests.exceptions.RequestException as e:
-    print("Error making request:", e)
-except ValueError as e:
-    print("Error decoding JSON:", e)
-    
-    
-# weather forecast
-weather_forecast_url = f"https://api.openweathermap.org/data/2.5/forecast?q={city_name}&appid={API_KEY}"
-try:
-        forecast_response = requests.get(weather_forecast_url).json()
-        forecast_data = {
-                    'date': forecast_response['list'][0]['dt'],
-                    'temp': forecast_response['list'][0]['main']['temp'],
-                    'humidity': forecast_response['list'][0]['main']['humidity'],
-                    'feels_like': forecast_response['list'][0]['main']['feels_like'],
-                    'icon': forecast_response['list'][0]['weather'][0]['icon'],
-                }
-except requests.exceptions.RequestException as e:
-    print("Error making request:", e)
-except ValueError as e:
-    print("Error decoding JSON:", e)
-'''
+    else:
+        city_name = 'Kolkata'
+        weather_url = f"https://api.weatherapi.com/v1/current.json?key={NEW_API}&q={city_name}&aqi=yes"
+        try:
+            response = requests.get(weather_url).json()
+            report = {
+                'city': response['location']['name'],
+                'country': response['location']['country'],
+                'date': response['location']['localtime'],
+                'temp': response['current']['temp_c'],
+                'feels_like': response['current']['feelslike_c'],
+                'humidity': response['current']['humidity'],
+                'wind': response['current']['wind_kph'],
+                'description': response['current']['condition']['text'],
+                'icon': response['current']['condition']['icon'],
+            }
+        except requests.exceptions.RequestException as e:
+            print("Error making request:", e)
+        except ValueError as e:
+            print("Error decoding JSON:", e)
+        report_date_str = report['date']
+        report_date = datetime.strptime(report_date_str, '%Y-%m-%d %H:%M')
+        search_hour = report_date.hour
+
+        forecast_url = f"http://api.weatherapi.com/v1/forecast.json?key={NEW_API}&q={city_name}&days=2&aqi=yes&alerts=yes"
+        try:
+            forecast_response = requests.get(forecast_url).json()
+            forecast_data = {
+                'f_date': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['time'],
+                'f_temp': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['temp_c'],
+                'f_humidity': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['humidity'],
+                'f_feels_like': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['feelslike_c'],
+                'f_icon': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['condition']['icon'],
+                'f_wind': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['wind_kph'],
+                'f_description': forecast_response['forecast']['forecastday'][1]['hour'][search_hour]['condition']['text'],
+            }
+        except requests.exceptions.RequestException as e:
+            print("Error making request:", e)
+        except ValueError as e:
+            print("Error decoding JSON:", e)    
+        
+        historical_url = f"http://api.weatherapi.com/v1/history.json?key={NEW_API}&q={city_name}&dt={yesterday_datetime}"
+        try:
+            historical_response = requests.get(historical_url).json()
+            historical_data = {
+                'date': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['time'],
+                'temp': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['temp_c'],
+                'feels_like': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['feelslike_c'],
+                'humidity': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['humidity'],
+                'wind': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['wind_kph'],
+                'description': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['condition']['text'],
+                'sunrise': historical_response['forecast']['forecastday'][0]['astro']['sunrise'],
+                'sunset': historical_response['forecast']['forecastday'][0]['astro']['sunset'],
+                'moonrise': historical_response['forecast']['forecastday'][0]['astro']['moonrise'],
+                'moonset': historical_response['forecast']['forecastday'][0]['astro']['moonset'],
+                'moon_phase': historical_response['forecast']['forecastday'][0]['astro']['moon_phase'],
+                'moon_illumination': historical_response['forecast']['forecastday'][0]['astro']['moon_illumination'],
+                'weather_icon': historical_response['forecast']['forecastday'][0]['hour'][search_hour]['condition']['icon'],
+            }
+        except requests.exceptions.RequestException as e:
+            print("Error making request:", e)
+        except ValueError as e:
+            print("Error decoding JSON:", e)
+    weather_report = {
+        'report': report,
+        'forecast_data': forecast_data,
+        'historical_data': historical_data,
+        'search_hour': search_hour,
+    }
+    return render(request, 'search.html', weather_report)
 
 def home(request):
     latitude = request.GET.get('latitude')
@@ -145,33 +206,43 @@ def home(request):
         local_hour = int(local_hour)
     else:
         local_hour = 0
+    print(local_hour)
     report = {}
     historical_data = {}
     ci = {}
-    
     if latitude and longitude:
         latitude = round(float(latitude), 2)
         longitude = round(float(longitude), 2)
         ci = get_location_info(latitude, longitude, api_key)
-        weather_url = f"http://api.weatherapi.com/v1/forecast.json?key={NEW_API}&q={latitude},{longitude}&days=2&aqi=yes&alerts=yes"
+
+        weather_url = f"https://api.weatherapi.com/v1/current.json?key={NEW_API}&q={latitude},{longitude}&aqi=yes"
         try:
             response = requests.get(weather_url).json()
             report = {
-            'date': response['forecast']['forecastday'][0]['hour'][local_hour]['time'],
-            'temp': response['forecast']['forecastday'][0]['hour'][local_hour]['temp_c'],
-            'feels_like': response['forecast']['forecastday'][0]['hour'][local_hour]['feelslike_c'],
-            'humidity': response['forecast']['forecastday'][0]['hour'][local_hour]['humidity'],
-            'wind': response['forecast']['forecastday'][0]['hour'][local_hour]['wind_kph'],
-            'description': response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['text'],
-            'icon': response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['icon'],
+            'date': response['location']['localtime'],
+            'temp': response['current']['temp_c'],
+            'feels_like': response['current']['feelslike_c'],
+            'humidity': response['current']['humidity'],
+            'wind': response['current']['wind_kph'],
+            'description': response['current']['condition']['text'],
+            'icon': response['current']['condition']['icon'],
+            }
+        except requests.exceptions.RequestException as e:
+            print("Error making request:", e)
+        except ValueError as e:
+            print("Error decoding JSON:", e)
         
-            'f_date': response['forecast']['forecastday'][1]['hour'][local_hour]['time'],
-            'f_temp': response['forecast']['forecastday'][1]['hour'][local_hour]['temp_c'],
-            'f_humidity': response['forecast']['forecastday'][1]['hour'][local_hour]['humidity'],
-            'f_feels_like': response['forecast']['forecastday'][1]['hour'][local_hour]['feelslike_c'],
-            'f_icon': response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['icon'],
-            'f_wind': response['forecast']['forecastday'][1]['hour'][local_hour]['wind_kph'],
-            'f_description': response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['text'],
+        forecast_url = f"http://api.weatherapi.com/v1/forecast.json?key={NEW_API}&q={latitude},{longitude}&days=2&aqi=yes&alerts=yes"
+        try:
+            forecast_response = requests.get(forecast_url).json()
+            forecast_data = {
+            'f_date': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['time'],
+            'f_temp': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['temp_c'],
+            'f_humidity': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['humidity'],
+            'f_feels_like': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['feelslike_c'],
+            'f_icon': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['icon'],
+            'f_wind': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['wind_kph'],
+            'f_description': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['text'],
             }
         except requests.exceptions.RequestException as e:
             print("Error making request:", e)
@@ -202,29 +273,39 @@ def home(request):
         except ValueError as e:
             print("Error decoding JSON:", e)
     
+    
     else:
         latitude = 22.57
         longitude = 88.36
         ci = get_location_info(latitude, longitude, api_key)
-        current_url = f"http://api.weatherapi.com/v1/forecast.json?key={NEW_API}&q={latitude},{longitude}&days=2&aqi=yes&alerts=yes"
+        weather_url = f"https://api.weatherapi.com/v1/current.json?key={NEW_API}&q={latitude},{longitude}&aqi=yes"
         try:
-            response = requests.get(current_url).json()
+            response = requests.get(weather_url).json()
             report = {
-            'date': response['forecast']['forecastday'][0]['hour'][local_hour]['time'],
-            'temp': response['forecast']['forecastday'][0]['hour'][local_hour]['temp_c'],
-            'feels_like': response['forecast']['forecastday'][0]['hour'][local_hour]['feelslike_c'],
-            'humidity': response['forecast']['forecastday'][0]['hour'][local_hour]['humidity'],
-            'wind': response['forecast']['forecastday'][0]['hour'][local_hour]['wind_kph'],
-            'description': response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['text'],
-            'icon': response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['icon'],
+            'date': response['location']['localtime'],
+            'temp': response['current']['temp_c'],
+            'feels_like': response['current']['feelslike_c'],
+            'humidity': response['current']['humidity'],
+            'wind': response['current']['wind_kph'],
+            'description': response['current']['condition']['text'],
+            'icon': response['current']['condition']['icon'],
+            }
+        except requests.exceptions.RequestException as e:
+            print("Error making request:", e)
+        except ValueError as e:
+            print("Error decoding JSON:", e)
         
-            'f_date': response['forecast']['forecastday'][1]['hour'][local_hour]['time'],
-            'f_temp': response['forecast']['forecastday'][1]['hour'][local_hour]['temp_c'],
-            'f_humidity': response['forecast']['forecastday'][1]['hour'][local_hour]['humidity'],
-            'f_feels_like': response['forecast']['forecastday'][1]['hour'][local_hour]['feelslike_c'],
-            'f_icon': response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['icon'],
-            'f_wind': response['forecast']['forecastday'][1]['hour'][local_hour]['wind_kph'],
-            'f_description': response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['text'],
+        forecast_url = f"http://api.weatherapi.com/v1/forecast.json?key={NEW_API}&q={latitude},{longitude}&days=2&aqi=yes&alerts=yes"
+        try:
+            forecast_response = requests.get(forecast_url).json()
+            forecast_data = {
+            'f_date': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['time'],
+            'f_temp': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['temp_c'],
+            'f_humidity': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['humidity'],
+            'f_feels_like': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['feelslike_c'],
+            'f_icon': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['icon'],
+            'f_wind': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['wind_kph'],
+            'f_description': forecast_response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['text'],
             }
         except requests.exceptions.RequestException as e:
             print("Error making request:", e)
@@ -260,6 +341,7 @@ def home(request):
 
     context = {
         'report': report,
+        'forecast_data': forecast_data,
         'historical_data': historical_data,
         'ci': ci
     }

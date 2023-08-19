@@ -369,7 +369,7 @@
 
   <header>
 
-    <a href="#/">
+    <a href="/">
       <img class="portfolio-icon" src="{{ STATIC_URL }}/static/img/windy.jpg">
     </a>
 
@@ -402,7 +402,7 @@
             <a href="historical">Historical Weather</a>
           </div>
         </li>
-        <li><a href="#about-us">About Us</a></li>
+        <li><a href="/#about-us">About Us</a></li>
         <li><a href="sign-up">Sign Up</a></li>
         <li><a href="log-in">Log In</a></li>
       </ul>
@@ -455,7 +455,7 @@
       </div>
     </div>
       <div id='centered-text' class="centered-text">
-      <h3>City Name: <strong>{{ ci.city }}, {{ci.country}}</strong> </h3>
+      <h3>City Name: <strong>{{report.city}}, {{report.country}}</strong> </h3>
       </div>
       <div class="weather-container">
         <div class="weather-box">
@@ -544,7 +544,12 @@
         weatherBoxes.forEach(box => {
           box.classList.toggle('dark', body.classList.contains('dark'));
         });
-  
+        
+        const newParams = new URLSearchParams(window.location.search);
+        newParams.set('city', '{{ report.city }}');  // Make sure to use the correct template tag to get the city name
+            window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
+        
+
         // Scroll to the target element
         const scrollTarget = document.getElementById('scroll-target');
         if (scrollTarget) {
@@ -588,39 +593,16 @@
       fweatherIcon.src = iconUrl;
     </script>
 
-  <script>
-    const successCallback = (position) => {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      const now = new Date();
-      let local_hour = now.getHours();
+    <script>
+        // Assuming your report.date is in the format "Date: 2023-08-19 11:51"
+        const reportDate = "{{ report.date }}"; // Replace this with your actual template tag
+        const parsedDate = new Date(reportDate);
+        const localHour = parsedDate.getHours();
 
-      console.log('latitude:', latitude);
-      console.log('longitude:', longitude);
-      console.log('local_hour:', local_hour);
-  
-      // Reload the page with new latitude and longitude
-      const urlParams = new URLSearchParams(window.location.search);
-      urlParams.set('latitude', latitude);
-      urlParams.set('longitude', longitude);
-      urlParams.set('local_hour', local_hour);
-      window.location.search = urlParams.toString();
-      };
-  
-      const errorCallback = (error) => {
-        console.log(error);
-      };
-  
-      // Check if the latitude and longitude query parameters are missing
-      const urlParams = new URLSearchParams(window.location.search);
-      const latitudeParam = urlParams.get('latitude');
-      const longitudeParam = urlParams.get('longitude');
-
-  
-      if (!latitudeParam || !longitudeParam) {
-        navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-      }
-  
-  </script>
+        // Add the local_hour parameter to the URL without reloading
+        const newParams = new URLSearchParams(window.location.search);
+        newParams.set('search_hour', localHour);
+        window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
+      </script>
 </body>
 </html>
