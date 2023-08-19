@@ -10,8 +10,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 NEW_API = '409bbc3d16674decb50192843230708'
 date = datetime.now()
-hour_only = date.hour
-fhour_only = date.hour + 24
 unix_timestamp = int(date.timestamp())
 one_day = timedelta(days=1)
 yesterday_datetime = date - one_day
@@ -142,6 +140,11 @@ except ValueError as e:
 def home(request):
     latitude = request.GET.get('latitude')
     longitude = request.GET.get('longitude')
+    local_hour = request.GET.get('local_hour')
+    if local_hour:
+        local_hour = int(local_hour)
+    else:
+        local_hour = 0
     report = {}
     historical_data = {}
     ci = {}
@@ -149,27 +152,26 @@ def home(request):
     if latitude and longitude:
         latitude = round(float(latitude), 2)
         longitude = round(float(longitude), 2)
-        print(latitude, longitude)
         ci = get_location_info(latitude, longitude, api_key)
         weather_url = f"http://api.weatherapi.com/v1/forecast.json?key={NEW_API}&q={latitude},{longitude}&days=2&aqi=yes&alerts=yes"
         try:
             response = requests.get(weather_url).json()
             report = {
-            'date': response['forecast']['forecastday'][0]['hour'][hour_only]['time'],
-            'temp': response['forecast']['forecastday'][0]['hour'][hour_only]['temp_c'],
-            'feels_like': response['forecast']['forecastday'][0]['hour'][hour_only]['feelslike_c'],
-            'humidity': response['forecast']['forecastday'][0]['hour'][hour_only]['humidity'],
-            'wind': response['forecast']['forecastday'][0]['hour'][hour_only]['wind_kph'],
-            'description': response['forecast']['forecastday'][0]['hour'][hour_only]['condition']['text'],
-            'icon': response['forecast']['forecastday'][0]['hour'][hour_only]['condition']['icon'],
+            'date': response['forecast']['forecastday'][0]['hour'][local_hour]['time'],
+            'temp': response['forecast']['forecastday'][0]['hour'][local_hour]['temp_c'],
+            'feels_like': response['forecast']['forecastday'][0]['hour'][local_hour]['feelslike_c'],
+            'humidity': response['forecast']['forecastday'][0]['hour'][local_hour]['humidity'],
+            'wind': response['forecast']['forecastday'][0]['hour'][local_hour]['wind_kph'],
+            'description': response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['text'],
+            'icon': response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['icon'],
         
-            'f_date': response['forecast']['forecastday'][1]['hour'][hour_only]['time'],
-            'f_temp': response['forecast']['forecastday'][1]['hour'][hour_only]['temp_c'],
-            'f_humidity': response['forecast']['forecastday'][1]['hour'][hour_only]['humidity'],
-            'f_feels_like': response['forecast']['forecastday'][1]['hour'][hour_only]['feelslike_c'],
-            'f_icon': response['forecast']['forecastday'][1]['hour'][hour_only]['condition']['icon'],
-            'f_wind': response['forecast']['forecastday'][1]['hour'][hour_only]['wind_kph'],
-            'f_description': response['forecast']['forecastday'][1]['hour'][hour_only]['condition']['text'],
+            'f_date': response['forecast']['forecastday'][1]['hour'][local_hour]['time'],
+            'f_temp': response['forecast']['forecastday'][1]['hour'][local_hour]['temp_c'],
+            'f_humidity': response['forecast']['forecastday'][1]['hour'][local_hour]['humidity'],
+            'f_feels_like': response['forecast']['forecastday'][1]['hour'][local_hour]['feelslike_c'],
+            'f_icon': response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['icon'],
+            'f_wind': response['forecast']['forecastday'][1]['hour'][local_hour]['wind_kph'],
+            'f_description': response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['text'],
             }
         except requests.exceptions.RequestException as e:
             print("Error making request:", e)
@@ -181,19 +183,19 @@ def home(request):
         try:
             historical_response = requests.get(historical_url).json()
             historical_data = {
-                    'date': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['time'],
-                    'temp': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['temp_c'],
-                    'feels_like': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['feelslike_c'],
-                    'humidity': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['humidity'],
-                    'wind': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['wind_kph'],
-                    'description': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['condition']['text'],
+                    'date': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['time'],
+                    'temp': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['temp_c'],
+                    'feels_like': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['feelslike_c'],
+                    'humidity': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['humidity'],
+                    'wind': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['wind_kph'],
+                    'description': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['text'],
                     'sunrise': historical_response['forecast']['forecastday'][0]['astro']['sunrise'],
                     'sunset': historical_response['forecast']['forecastday'][0]['astro']['sunset'],
                     'moonrise': historical_response['forecast']['forecastday'][0]['astro']['moonrise'],
                     'moonset': historical_response['forecast']['forecastday'][0]['astro']['moonset'],
                     'moon_phase': historical_response['forecast']['forecastday'][0]['astro']['moon_phase'],
                     'moon_illumination': historical_response['forecast']['forecastday'][0]['astro']['moon_illumination'],
-                    'weather_icon': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['condition']['icon'],
+                    'weather_icon': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['icon'],
                 }
         except requests.exceptions.RequestException as e:
             print("Error making request:", e)
@@ -208,21 +210,21 @@ def home(request):
         try:
             response = requests.get(current_url).json()
             report = {
-            'date': response['forecast']['forecastday'][0]['hour'][hour_only]['time'],
-            'temp': response['forecast']['forecastday'][0]['hour'][hour_only]['temp_c'],
-            'feels_like': response['forecast']['forecastday'][0]['hour'][hour_only]['feelslike_c'],
-            'humidity': response['forecast']['forecastday'][0]['hour'][hour_only]['humidity'],
-            'wind': response['forecast']['forecastday'][0]['hour'][hour_only]['wind_kph'],
-            'description': response['forecast']['forecastday'][0]['hour'][hour_only]['condition']['text'],
-            'icon': response['forecast']['forecastday'][0]['hour'][hour_only]['condition']['icon'],
+            'date': response['forecast']['forecastday'][0]['hour'][local_hour]['time'],
+            'temp': response['forecast']['forecastday'][0]['hour'][local_hour]['temp_c'],
+            'feels_like': response['forecast']['forecastday'][0]['hour'][local_hour]['feelslike_c'],
+            'humidity': response['forecast']['forecastday'][0]['hour'][local_hour]['humidity'],
+            'wind': response['forecast']['forecastday'][0]['hour'][local_hour]['wind_kph'],
+            'description': response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['text'],
+            'icon': response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['icon'],
         
-            'f_date': response['forecast']['forecastday'][1]['hour'][hour_only]['time'],
-            'f_temp': response['forecast']['forecastday'][1]['hour'][hour_only]['temp_c'],
-            'f_humidity': response['forecast']['forecastday'][1]['hour'][hour_only]['humidity'],
-            'f_feels_like': response['forecast']['forecastday'][1]['hour'][hour_only]['feelslike_c'],
-            'f_icon': response['forecast']['forecastday'][1]['hour'][hour_only]['condition']['icon'],
-            'f_wind': response['forecast']['forecastday'][1]['hour'][hour_only]['wind_kph'],
-            'f_description': response['forecast']['forecastday'][1]['hour'][hour_only]['condition']['text'],
+            'f_date': response['forecast']['forecastday'][1]['hour'][local_hour]['time'],
+            'f_temp': response['forecast']['forecastday'][1]['hour'][local_hour]['temp_c'],
+            'f_humidity': response['forecast']['forecastday'][1]['hour'][local_hour]['humidity'],
+            'f_feels_like': response['forecast']['forecastday'][1]['hour'][local_hour]['feelslike_c'],
+            'f_icon': response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['icon'],
+            'f_wind': response['forecast']['forecastday'][1]['hour'][local_hour]['wind_kph'],
+            'f_description': response['forecast']['forecastday'][1]['hour'][local_hour]['condition']['text'],
             }
         except requests.exceptions.RequestException as e:
             print("Error making request:", e)
@@ -234,19 +236,19 @@ def home(request):
         try:
             historical_response = requests.get(historical_url).json()
             historical_data = {
-                    'date': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['time'],
-                    'temp': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['temp_c'],
-                    'feels_like': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['feelslike_c'],
-                    'humidity': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['humidity'],
-                    'wind': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['wind_kph'],
-                    'description': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['condition']['text'],
+                    'date': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['time'],
+                    'temp': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['temp_c'],
+                    'feels_like': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['feelslike_c'],
+                    'humidity': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['humidity'],
+                    'wind': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['wind_kph'],
+                    'description': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['text'],
                     'sunrise': historical_response['forecast']['forecastday'][0]['astro']['sunrise'],
                     'sunset': historical_response['forecast']['forecastday'][0]['astro']['sunset'],
                     'moonrise': historical_response['forecast']['forecastday'][0]['astro']['moonrise'],
                     'moonset': historical_response['forecast']['forecastday'][0]['astro']['moonset'],
                     'moon_phase': historical_response['forecast']['forecastday'][0]['astro']['moon_phase'],
                     'moon_illumination': historical_response['forecast']['forecastday'][0]['astro']['moon_illumination'],
-                    'weather_icon': historical_response['forecast']['forecastday'][0]['hour'][hour_only]['condition']['icon'],
+                    'weather_icon': historical_response['forecast']['forecastday'][0]['hour'][local_hour]['condition']['icon'],
                 }
         except requests.exceptions.RequestException as e:
             print("Error making request:", e)
