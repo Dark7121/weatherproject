@@ -58,11 +58,17 @@ def search_result(request):
     report = {}
     forecast_data = {}
     historical_data = {}
+    show_popup = False
+    search_hour = 0
     
     if request.method == 'POST':
         city_name = request.POST.get('city')
     else:
-        city_name = request.GET.get('city')
+        try:
+            city_name = request.POST.get('city')
+        except (KeyError, ValueError):
+            show_popup = True
+            city_name = "Kolkata"
 
     if city_name:
         weather_url = f"https://api.weatherapi.com/v1/current.json?key={NEW_API}&q={city_name}&aqi=yes"
@@ -79,13 +85,16 @@ def search_result(request):
                 'description': response['current']['condition']['text'],
                 'icon': response['current']['condition']['icon'],
             }
+            report_date_str = report['date']
+            report_date = datetime.strptime(report_date_str, '%Y-%m-%d %H:%M')
+            search_hour = report_date.hour
+        except (KeyError, ValueError):
+            show_popup = True
+            city_name = "Kolkata"
         except requests.exceptions.RequestException as e:
             print("Error making request:", e)
         except ValueError as e:
             print("Error decoding JSON:", e)
-        report_date_str = report['date']
-        report_date = datetime.strptime(report_date_str, '%Y-%m-%d %H:%M')
-        search_hour = report_date.hour
 
         forecast_url = f"http://api.weatherapi.com/v1/forecast.json?key={NEW_API}&q={city_name}&days=2&aqi=yes&alerts=yes"
         try:
@@ -126,7 +135,7 @@ def search_result(request):
             print("Error making request:", e)
         except ValueError as e:
             print("Error decoding JSON:", e)
-            
+                  
     else:
         city_name = 'Kolkata'
         weather_url = f"https://api.weatherapi.com/v1/current.json?key={NEW_API}&q={city_name}&aqi=yes"
@@ -195,6 +204,7 @@ def search_result(request):
         'forecast_data': forecast_data,
         'historical_data': historical_data,
         'search_hour': search_hour,
+        'show_popup': show_popup,
     }
     return render(request, 'search.html', weather_report)
 
@@ -366,4 +376,7 @@ def signup(request):
     return render(request, 'signup.html')
 
 def login(request):
-    return render(request, 'login.html')    
+    return render(request, 'login.html') 
+
+def feedback(request):
+    return render(request, 'feedbackform.html')   

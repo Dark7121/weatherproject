@@ -3,549 +3,709 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="keywords" content="Django,HTML,CSS,JavaScript,JSON">
+  <meta name="keywords" content="Django, HTML, CSS, JavaScript, JSON, Responsive">
   <meta name="author" content="Abhijit Das">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Windy Web Application</title>
-  <link rel="icon" type="image/x-icon" href="/Darkmaster7121 (1).png" />
+  <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}/static/img/windy.jpg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+      /* Reset some default styles for consistent rendering */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Styles for the header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #dbb92f; /* Light mode background color */
+    color: #f1c40f;
+    height: 60px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    font-size: large;
+    z-index: 1000;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.portfolio-icon {
+  position: relative;
+  border-radius: 50%;
+  max-width: 50px; /* Maximum width for the icon */
+  max-height: 50px; /* Maximum height for the icon */
+  transition: transform 0.2s, filter 0.2s; /* Add a transition on hover to grow the icon */
+}
+
+.portfolio-icon:hover {
+  transform: scale(1.1); /* Apply a slight scale on hover for glowing effect */
+  filter: brightness(1.5); /* Increase brightness on hover for glowing effect */
+}
+
+.search-bar {
+  margin-left: 21px;
+  border-radius: 15px;
+  padding: 8px 12px;
+  width: 50%; /* Adjust the width as needed */
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-bar:focus {
+  border-color: black;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.6);
+}
+
+.btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  background-color: #00BDFE;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #0088aa;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.6);
+}
+
+.header-right ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.header-right li {
+    margin-right: 20px;
+}
+
+.header-right li a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Dropdown styles */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    /* Additional dropdown styles */
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* User authentication styles */
+.user-auth {
+    color: #333;
+    /* Styles for user profile icon or sign up/log in links */
+}
+
+/* Hamburger icon styles */
+.responsive-menu {
+    display: none;
+    cursor: pointer;
+}
+
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+  }
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #111;
+    min-width: 150px;
+    border-radius: 5px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: #fff; /* Set dropdown menu item text color to white */
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+    background-color: #444;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Add a glowing effect on header links when hovered */
+nav a:hover {
+    animation: glow 1s infinite alternate;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 6px 0;
+}
+
+body {
+  background-color: #fafafa;
+  height: 100vh;
+  margin: 0;
+  transition: background 0.2s linear;
+  color: #000;
+}
+
+.checkbox {
+    opacity: 0;
+    position: absolute;
+}
   
-  <style>
-    html {
-      scroll-behavior: smooth;
-    }
-    * {
-      box-sizing: border-box;
-    }
-    
-    body {
-      background-color: #fafafa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      transition: background 0.2s linear;
-      color: #000;
-    }
-    
-    body.dark {
-      background: #292C35;
-      color: white;
+.label {
+    background-color: #111;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    position: relative;
+    height: 22px;
+    width: 48px;
+    transform: scale(1.0);
+}
+
+.switch-container {
+    position: absolute;
+    top: 66px; /* Adjust the top position as needed */
+    right: 20px; /* Adjust the right position as needed */
+}
+
+.label .ball {
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 1px;
+  right: 25px;
+  height: 20px;
+  width: 20px;
+  transform: translateX(0px);
+  transition: transform 0.2s linear;
+}
+
+.checkbox:checked + .label .ball {
+  transform: translateX(21px);
+}
+
+.fa-moon {
+  color: #f1c40f;
+}
+
+.fa-sun {
+  color: #f39c12;
+}
+
+/* Slideshow container */
+.slideshow-container {
+  height: 300px;
+  max-width: 100%;
+  position: relative;
+  margin: auto;
+  margin-top: 41.5px;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+}
+
+.mySlides img {
+    width: 100%;
+    height: 430px; /* Match the container's height */
+    object-fit: cover; /* Maintain image aspect ratio and cover container */
+  }
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: gray;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 3px;
+  width: 25px;
+  margin: 0 2px;
+  background-color: black;
+  border-radius: 40%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+  box-shadow: 0px 1px 1px rgb(91, 89, 89), 0px 2px 1px rgb(88, 86, 86), 0px 3px 1px rgb(90, 87, 87);
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+  animation-name: fade;
+  animation-duration: .5s;
+}
+
+.main-body-section {
+    margin-top: 20vh;
+}
+
+.centered-text{
+  text-align: center;
+}
+
+.weather-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.weather-box {
+  flex: 5;
+  background-color: #281d46;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px;
+  margin: 20px;
+  text-align: center;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  color: white;
+  font-style: bold;
+  font-size: 20px;
+  justify-content: center;
+  word-spacing: 7px;
+  line-height: 1.4;
+}
+
+body.dark {
+    background: #292C35;
+    color: white;
+}
+
+body.dark header {
+    background-color: #1f5ab3; /* Dark mode background color */
+    color: #fafafa;
+}
+
+body.dark .about-us-section{
+    background-color: #232b45;
+    color: #fafafa;
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+/* Keyframes for the glowing effect */
+@keyframes glow {
+  from {
+    text-shadow: none;
+  }
+  to {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #f39c12, 0 0 70px #f39c12, 0 0 80px #f39c12, 0 0 100px #f39c12, 0 0 150px #f39c12;
+  }
+}
+
+.about-us-section {
+  margin-top: 40px;
+  padding: 20px;
+  text-align: center;
+  background-color: gray;
+}
+
+.profiles-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.profile-box {
+  text-align: center;
+  border-radius: 5px;
+}
+
+.link-inbox {
+  color: #6495ED;
+}
+
+.link-inbox:visited {
+  color: #CCCCFF;
+}
+
+.link-inbox:hover {
+  color: green;
+  text-decoration: underline;
+}
+
+.bottom-down {
+  margin-top: 30px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .header-right ul {
+        display: none;
+        position: absolute;
+        top: 50px;
+        right: 20px;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: gray;
+        color: white;
     }
 
-    .checkbox {
-      opacity: 0;
-      position: absolute;
-    }
-    
-    .label {
-      background-color: #111;
-      border-radius: 50px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 5px;
-      position: relative;
-      height: 22px;
-      width: 43.5px;
-      transform: scale(1.0);
-    }
-    .switch-container {
-      position: absolute;
-      top: 66px; /* Adjust the top position as needed */
-      right: 20px; /* Adjust the right position as needed */
-    }
-    .label .ball {
-      background-color: #fff;
-      border-radius: 50%;
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      height: 19px;
-      width: 20px;
-      transform: translateX(0px);
-      transition: transform 0.2s linear;
-    }
-    
-    .checkbox:checked + .label .ball {
-      transform: translateX(19.5px);
-    }
-    
-    .fa-moon {
-      color: #f1c40f;
-    }
-    
-    .fa-sun {
-      color: #f39c12;
-    }
-    
-    header {
-      background-color: #dbb92f; /* Light mode background color */
-      color: #292C35;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 60px;
-      padding: 0 25px;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
+    .header-right ul.active {
+        display: flex;
+        flex-direction: column;  
     }
 
-    body.dark header {
-      background-color: #1f5ab3; /* Dark mode background color */
-      color: #fafafa;
-    }
-
-    /* Navigation Styles */
-    nav {
-      display: flex;
-      align-items: center;
-    }
-
-    nav ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-    }
-
-    nav li {
-      margin-right: 25px;
-    }
-
-    nav a {
-      color: white; /* Set the text color to white for both light and dark modes */
-      text-decoration: none;
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    /* Dropdown Styles */
-    .dropdown {
-      position: relative;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background-color: #111;
-      min-width: 150px;
-      border-radius: 5px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    }
-
-    .dropdown-content a {
-      color: #fff; /* Set dropdown menu item text color to white */
-      display: block;
-      padding: 10px;
-      text-decoration: none;
-      transition: background-color 0.2s;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #444;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    .portfolio-icon {
-      border-radius: 50%;
-      max-width: 50px; /* Maximum width for the icon */
-      max-height: 50px; /* Maximum height for the icon */
-      transition: transform 0.2s, filter 0.2s; /* Add a transition on hover to grow the icon */
-    }
-
-    .portfolio-icon:hover {
-      transform: scale(1.1); /* Apply a slight scale on hover for glowing effect */
-      filter: brightness(1.5); /* Increase brightness on hover for glowing effect */
-    }
-
-    /* Add a glowing effect on header links when hovered */
-    nav a:hover {
-      animation: glow 1s infinite alternate;
-    }
-
-    /* Keyframes for the glowing effect */
-    @keyframes glow {
-      from {
-        text-shadow: none;
-      }
-      to {
-        text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #f39c12, 0 0 70px #f39c12, 0 0 80px #f39c12, 0 0 100px #f39c12, 0 0 150px #f39c12;
-      }
-    }
-
-    @media (max-width: 768px) {
-      /* Adjust styles for tablets and smaller screens */
-      body {
-        font-size: 16px; /* Adjust font size for better readability */
-        height: auto; /* Allow body to expand based on content */
-      }
-    
-      .content-container {
-        top: 0; /* Adjust the top position of the content container */
-        padding: 20px; /* Add some padding for smaller screens */
-      }
-    
-      .slider-container {
-        top: 0px;
-      }
-    
-      .carousel-item img {
-        max-height: 0; /* Adjust image height for smaller screens */
-      }
-    
-      .weather-container {
-        top: 0; /* Adjust the top position of the weather container */
-        flex-direction: column;
-        align-items: center;
-        margin-top: 0;
-      }
-    
-      .weather-box {
-        padding: 20px;
+    .header-right li {
         margin: 0;
-        height: auto; /* Allow boxes to expand based on content */
-      }
-    
-      .bottom-container {
-        margin-top: 999px;
-      }
-    
-      /* Adjust navigation styles for smaller screens */
-    }
-    
-    @media (max-width: 576px) {
-      /* Adjust styles for mobile devices */
-      body {
-        font-size: 14px; /* Further adjust font size */
-      }
-    
-      .slider-container {
-        margin-top: 0; /* Further adjust the top position of the slider */
-      }
-    
-      .carousel-item img {
-        max-height: 150px; /* Further adjust image height for smaller screens */
-      }
-    
-      .bottom {
-        margin-top: 100px; /* Further adjust margin for the about us section */
-      }
-    
-      /* Additional adjustments as needed */
+        padding: 10px 20px;
+        border-bottom: 1px solid #e0e0e0;
     }
 
-    /* Additional CSS rules */
-    .carousel {
-      margin-top: 315px; /* Adjust the margin-top for the slider */
-    }
-
-    /* Adjust the content below the slider */
-    .content {
-      margin-top: 0; /* Adjust the margin-top for the content */
-    }
-
-    .content-container {
-      position: relative; /* Add this to maintain the layout */
-      z-index: 0; /* Ensure that the content is below the header */
-      width: 100%;
-    }
-
-    /* Adjust the slider position */
-    .slider-container {
-      position: absolute;
-      top: 70px;
-      left: 0;
-      width: 100%;
-      z-index: 1;
-    }
-
-    .carousel-item img {
-      max-height: 425px; /* Adjust this value as needed */
-    }
-
-    .carousel-inner {
-      position: relative;
-      width: 100%; /* Set width to 100% */
-      height: auto; /* Allow images to adjust their height proportionally */
+    /* Additional styles for the responsive menu */
+    .responsive-menu {
+        display: block;
+        cursor: pointer;
+        z-index: 3;
     }
 
     .weather-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 25px;
-      z-index: 2; /* Ensure that the weather widget is above the header */
+        flex-direction: column; /* Stack weather boxes vertically */
+    }
+
+    .about-us-section {
+        /* Display the About Us section in responsive view */
+        display: block;
+        margin-top: 20px;
+        padding: 30px;
+    }
+
+    .profiles-container {
+        flex-direction: column; /* Stack profile boxes vertically */
+        padding: 10px;
     }
     
-    .weather-box {
-      background-color: #281d46;
-      border: 1px solid #ccc;
-      border-radius: 20px;
-      padding: 40px;
-      margin: 20px;
-      text-align: center;
-      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-      color: white;
-      height: 400px;
+    .profile-box {
+        margin: 10px;
     }
+  }
 
-    .weather-container.dark {
-      color: rgb(255, 255, 255); /* Text color for dark mode */
-    }
+.feedback-box{
+  position: absolute;
+  border-radius: 15px;
+  right: 0;
+  border: 1px solid #ccc;
+  text-align: center;
+  display: inline-block;
+  width: 120px;
+  height: 33px;
+  background-color: red;
+  color: white;
+  animation: glow 1s ease-in-out infinite alternate;
+}
 
-    .weather-box.dark {
-      color: #ffffff;
-    }
-    
-    .weather-icon {
-      font-size: 48px;
-      margin-bottom: 10px;
-      color: #f39c12; /* Adjust the color as needed */
-    }
+.feedback-box :visited {
+  color: white;
+}
 
-    .centered-text {
-      margin-top: 850px;
-      text-align: center;
-    }
-
-    .bottom-container {
-      display: flex;
-      top: 1500px;
-      justify-content: center;
-      text-align: center;
-      background-color: #281d46;
-      color: white;
-      width: 100%;
-      height: 500px;
-      position: absolute;
-      bottom: 0;
-      z-index: 3;
-    }
-    
-    .bottom {
-      padding: 5px;
-      width: 100%;
-      max-width: 1200px; /* Adjust the maximum width as needed */
-    }
-    
-
-    .bottom-left{
-      position: absolute;
-      left: 40px;
-      text-align: left;
-      padding: 5px;
-    }
-
-    .bottom-right{
-      position: absolute;
-      right: 40px;
-      text-align: right;
-      padding: 15px;
-    }
-
-    .bottom-down{
-      position: absolute;
-      bottom: 0;
-      text-align: center;
-      padding: 15px;
-      right: 0;
-      left: 0;
-    }
-
-  </style>
-
+</style>
 </head>
-<body class="dark">
+<body>
+    <header>
+        <div class="header-left">
+            <a href="#"><img class="portfolio-icon" src="{{ STATIC_URL }}/static/img/windy.jpg"></a>
+              <nav>
+                <ul>
+                  <li>
+                    <form method="post"  action="{% url 'search' %}">  
+                      {% csrf_token %}  
+                      <input type="text" class="search-bar" name="city" placeholder="Type Your City">  
+                      <button type="submit" class="btn">Search</button>    
+                    </form>
+                  </li>
+                </ul>
+              </nav>
+        </div>
+        <nav class="header-right">
+            <ul>
+                <li class="dropdown">
+                    <h3><a href="#">Weather</a></h3>
+                    <div class="dropdown-content">
+                    <h3><a href="current">Current Weather</a></h3>
+                    <h3><a href="forecast">Weather Forecast</a></h3>
+                    <h3><a href="historical">Historical Weather</a></h3>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <h3><a href="#">Dashboard</a></h3>
+                    <div class="dropdown-content">
+                    <h3><a href="current">Current Weather</a></h3>
+                    <h3><a href="forecast">Weather Forecast</a></h3>
+                    <h3><a href="historical">Historical Weather</a></h3>
+                    </div>
+                </li>
+                <li><h3><a href="#about-us-section">About Us</a></h3></li>
+                {% if user.is_authenticated %}
+                    <li class="user-auth">
+                        <h3><a href="#">Welcome, {{ user.username }}</a></h3>
+                        <div class="dropdown-content">
+                            <h3><a href="{% url 'logout' %}">Logout</a></h3>
+                        </div>
+                    </li>
+                {% else %}
+                    <li>
+                        <h3><a href="{% url 'login' %}">Log In</a></h3>
+                    </li>
+                    <li>
+                        <h3><a href="{% url 'signup' %}">Sign Up</a></h3>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <div class="switch-container">
+            <input type="checkbox" class="checkbox" id="chk" />
+            <label class="label" for="chk">
+              <i class="fas fa-sun"></i>
+              <i class="fas fa-moon"></i>
+              <div class="ball"></div>
+            </label>
+        </div>
+        <div class="responsive-menu">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </header>
 
-  <header>
-
-    <a href="/">
-      <img class="portfolio-icon" src="{{ STATIC_URL }}/static/img/windy.jpg">
-    </a>
-
-    <nav>
-      <ul>
-        <li>
-          <form method="post" action="{% url 'search' %}" stle="position:absolute; margin-left:10px;">  
-            {% csrf_token %}  
-            <div class=" input-group">  
-            <input type="text" class="form-control" name="city" placeholder="Type Your City">  
-            <div class="input-group-btn">  
-              <button type="submit" class="btn btn-primary">Search</button>  
-            </div>  
-            </div>  
-          </form>
-        </li>
-        <li class="dropdown">
-          <a href="#">Weather</a>
-          <div class="dropdown-content">
-            <a href="current">Current Weather</a>
-            <a href="forecast">Weather Forecast</a>
-            <a href="historical">Historical Weather</a>
-          </div>
-        </li>
-        <li class="dropdown">
-          <a href="#">Dashboard</a>
-          <div class="dropdown-content">
-            <a href="current">Current Weather</a>
-            <a href="forecast">Weather Forecast</a>
-            <a href="historical">Historical Weather</a>
-          </div>
-        </li>
-        <li><a href="/#about-us">About Us</a></li>
-        <li><a href="sign-up">Sign Up</a></li>
-        <li><a href="log-in">Log In</a></li>
-      </ul>
-    </nav>
-    <div class="switch-container">
-        <input type="checkbox" class="checkbox" id="chk" />
-        <label class="label" for="chk">
-            <i class="fas fa-moon"></i>
-            <i class="fas fa-sun"></i>
-            <div class="ball"></div>
-        </label>
+    <div class="body-section">
+        <div class="slideshow-container">
+            <div class="mySlides fade">
+                <img src="{{ STATIC_URL }}/static/img/full-sunny.jpg" alt="First slide" style="width:100%">
+            </div>
+            <div class="mySlides fade">
+                <img src="{{ STATIC_URL }}/static/img/sunny.jpg" alt="First slide" style="width:100%">
+            </div>
+            <div class="mySlides fade">
+                <img src="{{ STATIC_URL }}/static/img/cloudy.jpg" alt="First slide" style="width:100%">
+            </div>
+            <div class="mySlides fade">
+                <img src="{{ STATIC_URL }}/static/img/rain.jpg" alt="First slide" style="width:100%">
+            </div>
+            <div class="mySlides fade">
+                <img src="{{ STATIC_URL }}/static/img/thunder.jpg" alt="First slide" style="width:100%">
+            </div>
+            <div class="mySlides fade">
+              <img src="{{ STATIC_URL }}/static/img/snow.jpg" alt="First slide" style="width:100%">
+            </div>
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            <div style="text-align:center">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+                <span class="dot" onclick="currentSlide(5)"></span>
+                <span class="dot" onclick="currentSlide(6)"></span>
+            </div>
+        </div>
+      <br>
+        <div class="main-body-section">
+          {% if show_popup %}
+            <div id="popup-container">
+              <div id="centered-text" class="centered-text" style="font-size:22px;">
+                <p>Sorry, we don't have the weather report for the searching location.
+                  <br> Please try again with another location.
+                </p>
+                <button id="close-popup">Close</button>
+              </div>
+            </div>
+            {% else %}
+            <div id='centered-text' class="centered-text">
+                <h1>City Name: <strong>{{ report.city }}, {{report.country}}</strong> </h1>
+            </div>
+            <div class="weather-container">
+                <div class="weather-box">
+                    <img id="weather-icon" src="" alt="weather icon" style="height:100px; width:100px;">
+                    <h3>Current Weather</h3>
+                    <p>Date: <span>{{report.date}}</span> </p>
+                    <p>Temperature: <span>{{report.temp}}&deg;C</span> </p>
+                    <p>Feels Like: <span>{{report.feels_like}}&deg;C</span> </p>
+                    <p>Humidity: <span>{{report.humidity}}%</span> </p>
+                    <p>Wind Speed: <span>{{report.wind}} km/h</span> </p>
+                    <p>Description: <span>{{report.description}}</span> </p>
+                </div>
+                <div class="weather-box">
+                    <img id="forecast-weather-icon" src="" alt="weather icon" style="height:100px; width:100px;">
+                    <h3>Weather Forecast</h3>
+                    <p>Date: <span>{{forecast_data.f_date}}</span> </p>
+                    <p>Temperature: <span>{{forecast_data.f_temp}}&deg;C</span> </p>
+                    <p>Feels Like: <span>{{forecast_data.f_feels_like}}&deg;C</span> </p>
+                    <p>Humidity: <span>{{forecast_data.f_humidity}}%</span> </p>
+                    <p>Wind Speed: <span>{{forecast_data.f_wind}} km/h</span> </p>
+                    <p>Description: <span>{{forecast_data.f_description}}</span> </p>
+                </div>
+                <div class="weather-box">
+                    <img id="historical-weather-icon" src="" alt="weather icon" style="height:100px; width:100px;">
+                    <h3>Historical Weather</h3>
+                    <p>Date: <span>{{historical_data.date}}</span> </p>
+                    <p>Temperature: <span>{{historical_data.temp}}&deg;C</span> </p>
+                    <p>Feels Like: <span>{{historical_data.feels_like}}&deg;C</span> </p>
+                    <p>Humidity: <span>{{historical_data.humidity}}%</span> </p>
+                    <p>Wind: <span>{{historical_data.wind}} km/h</span> </p>
+                    <p>Description: <span>{{historical_data.description}}</span> </p>
+                </div>
+            </div>
+            <div class="feedback-box">
+              <h2><a href="feedback">Feedback</a></h2>
+            </div>
+            {% endif %}
+        </div>
+      </br>
     </div>
-  </header>
-
-  <div class="content-container">
-    <div class="slider-container">
-      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-        <ol class="carousel-indicators">
-          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
-        </ol>
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img class="d-block w-100" src="{{ STATIC_URL }}/static/img/sunny.jpg" alt="First slide">
-          </div>
-          <div class="carousel-item">
-            <img class="d-block w-100" src="{{ STATIC_URL }}/static/img/cloud.jpeg" alt="Second slide">
-          </div>
-          <div class="carousel-item">
-            <img class="d-block w-100" src="{{ STATIC_URL }}/static/img/rain.jpg" alt="Third slide">
-          </div>
-          <div class="carousel-item">
-            <img class="d-block w-100" src="{{ STATIC_URL }}/static/img/thunder.jpg" alt="Third slide">
-          </div>
-          <div class="carousel-item">
-            <img class="d-block w-100" src="{{ STATIC_URL }}/static/img/snow.jpeg" alt="Third slide">
-          </div>
-        </div>
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
-      </div>
-    </div>
-      <div id='centered-text' class="centered-text">
-      <h3>City Name: <strong>{{report.city}}, {{report.country}}</strong> </h3>
-      </div>
-      <div class="weather-container">
-        <div class="weather-box">
-          <img id="weather-icon" src="" alt="weather icon">
-          <h3>Current Weather</h3>
-          
-          <p>Date: <span>{{report.date}}</span> </p>
-          <p>Temperature: <span>{{report.temp}}&deg;C</span> </p>
-          <p>Feels Like: <span>{{report.feels_like}}</span> </p>
-          <p>Humidity: <span>{{report.humidity}}%</span> </p>
-          <p>Wind Speed: <span>{{report.wind}} km/h</span> </p>
-          <p>Description: <span>{{report.description}}</span> </p>
-        </div>
-        <div class="weather-box">
-          <img id="forecast-weather-icon" src="" alt="weather icon">
-          <h3>Weather Forecast</h3>
-          <p>Date: <span>{{forecast_data.f_date}}</span> </p>
-          <p>Temperature: <span>{{forecast_data.f_temp}}&deg;C</span> </p>
-          <p>Feels Like: <span>{{forecast_data.f_feels_like}}&deg;C</span> </p>
-          <p>Humidity: <span>{{forecast_data.f_humidity}}%</span> </p>
-          <p>Wind Speed: <span>{{forecast_data.f_wind}} km/h</span> </p>
-          <p>Description: <span>{{forecast_data.f_description}}</span> </p>
-        </div>
-        <div class="weather-box">
-          <img id="historical-weather-icon" src="" alt="weather icon">
-          <h3>Historical Weather</h3>
-          <p>Date: <span>{{historical_data.date}}</span> </p>
-          <p>Temperature: <span>{{historical_data.temp}}&deg;C</span> </p>
-          <p>Feels Like: <span>{{historical_data.feels_like}}&deg;C</span> </p>
-          <p>Humidity: <span>{{historical_data.humidity}}%</span> </p>
-          <p>Wind: <span>{{historical_data.wind}} km/h</span> </p>
-          <p>Description: <span>{{historical_data.description}}</span> </p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="about-us" class="bottom-container">
-    <div class="bottom">
-      <h3>About Us</h3>
-      <p> Hello, It's a collaborative project between an aspiring Python Developer and a Power BI Developer. You can check your current weather, historical weather,<br>
+    <div id="about-us-section" class="about-us-section">
+        <h1>About Us</h1>
+        <p> Hello, It's a collaborative project between an aspiring Python Developer and a Power BI Developer. You can check your current weather, historical weather,<br>
         and weather forecasting. If you like our project, please give us a star on GitHub. For any inquiry, please contact us. Thank you for visiting our website.
-      </p>
-      <p> Below are our personal details and links to our GitHub and LinkedIn accounts, along with our resumes. </p>
-      <div class="bottom-left">
-        <img src="{{ STATIC_URL }}/static/img/dark.jpg" alt="Avatar" style="border-radius: 50%; max-height: 150px; max-width: 150px;">
-        <h3>Abhijit Das</h3>
-        <p>Web Development || Java || MySQL || Python Developer ||<br>Django || Machine Learning || Deep Learning || AI Enthusiast</p>
-        <div>
-          <img src="{{ STATIC_URL }}/static/img/GitHub-Mark.png" alt="GitHub" style="border-radius: 70%; max-height: 30px; max-width: 30px;">
-          <a href="https://github.com/Dark7121?tab=repositories">GitHub</a>
+        </p>
+        <p> Below are our personal details and links to our GitHub and LinkedIn accounts, along with our resumes. </p>
+        <div class="profiles-container">
+            <div class="profile-box">
+                <img src="{{ STATIC_URL }}/static/img/dark.jpg" alt="Avatar" style="border-radius: 50%; max-height: 150px; max-width: 150px;">
+                <h3>Abhijit Das</h3>
+                <p>Web Development || Java || MySQL || Python Developer ||<br>Django || Machine Learning || Deep Learning || AI Enthusiast</p>
+                <div>
+                    <img src="{{ STATIC_URL }}/static/img/GitHub-Mark.png" alt="GitHub" style="border-radius: 70%; max-height: 30px; max-width: 30px;">
+                    <a href="https://github.com/Dark7121?tab=repositories" class="link-inbox">GitHub</a>
+                </div>
+                <div>
+                    <img src="{{ STATIC_URL }}/static/img/linkedin-icon.jpg" alt="LinkedIn" style="border-radius: 20%; max-height: 30px; max-width: 30px;">
+                    <a href="https://www.linkedin.com/in/abhijit-das-530870194/" class="link-inbox">LinkedIn</a>
+                </div>
+            </div>
+            <div class="profile-box">
+                <img src="{{ STATIC_URL }}/static/img/powerbi.jpg" alt="Avatar" style="border-radius: 50%; max-height: 150px; max-width: 150px;">
+                <h3>Sabyasachi Bhattacharjee</h3>
+                <p> Data Analyst || Business Intelligence || Power BI || DAX || Power Query ||<br>ETL Piplines || MySQL || Python || Data Visualization || Machine Learning</p>
+                <div>
+                    <img src="{{ STATIC_URL }}/static/img/GitHub-Mark.png" alt="GitHub" style="border-radius: 70%; max-height: 30px; max-width: 30px;">
+                    <a href="https://github.com/Sabya02?tab=repositories" class="link-inbox">GitHub</a>
+                </div>
+                <div>
+                    <img src="{{ STATIC_URL }}/static/img/linkedin-icon.jpg" alt="LinkedIn" style="border-radius: 20%; max-height: 30px; max-width: 30px;">
+                    <a href="https://www.linkedin.com/in/sabyasachi-bhattacharjee/" class="link-inbox">LinkedIn</a>
+                </div>
+            </div>
         </div>
         <div>
-          <img src="{{ STATIC_URL }}/static/img/linkedin-icon.jpg" alt="LinkedIn" style="border-radius: 20%; max-height: 30px; max-width: 30px;">
-          <a href="https://www.linkedin.com/in/abhijit-das-530870194/">LinkedIn</a>
+            <footer class="bottom-down">
+                <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
+            </footer> 
         </div>
-      </div>
-      <div class="bottom-right">
-        <img src="{{ STATIC_URL }}/static/img/powerbi.jpg" alt="Avatar" style="border-radius: 50%; max-height: 150px; max-width: 150px;">
-        <h3>Sabyasachi Bhattacharjee</h3>
-        <p> Data Analyst || Business Intelligence || Power BI || DAX || Power Query ||<br>ETL Piplines || MySQL || Python || Data Visualization || Machine Learning</p>
-        <div>
-          <img src="{{ STATIC_URL }}/static/img/GitHub-Mark.png" alt="GitHub" style="border-radius: 70%; max-height: 30px; max-width: 30px;">
-          <a href="https://github.com/Sabya02?tab=repositories">GitHub</a>
-        </div>
-        <div>
-          <img src="{{ STATIC_URL }}/static/img/linkedin-icon.jpg" alt="LinkedIn" style="border-radius: 20%; max-height: 30px; max-width: 30px;">
-          <a href="https://www.linkedin.com/in/sabyasachi-bhattacharjee/">LinkedIn</a>
-        </div>
-      </div>
-      <div>
-        <footer class="bottom-down">
-          <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
-        </footer> 
     </div>
-    </div>   
-  </div>
+
     <script>
-      const chk = document.getElementById('chk');
-      const body = document.body;
+      document.addEventListener("DOMContentLoaded", function() {
+          var popupContainer = document.getElementById("popup-container");
+          var closeButton = document.getElementById("close-popup");
   
-      chk.addEventListener('change', () => {
-        body.classList.toggle('dark');
-        body.classList.toggle('light-mode');
+          popupContainer.style.display = "block";
   
+          closeButton.addEventListener("click", function() {
+              popupContainer.style.display = "none";
+              window.location.href = "/";  // Redirect to the home page
+          });
+      });
+  </script>
+
+    <script>
+      function applyMode(mode) {
+        const body = document.body;
+        const label = document.querySelector('.label');
+        const ball = document.querySelector('.ball');
+        
+        body.classList.toggle('dark', mode === 'dark');
+        
+        // Update position of the .ball element
+        if (mode === 'dark') {
+            ball.style.transform = 'translateX(21px)';
+        } else {
+            ball.style.transform = 'translateX(0)';
+        }
+    
         const weatherBoxes = document.querySelectorAll('.weather-container');
         weatherBoxes.forEach(box => {
-          box.classList.toggle('dark', body.classList.contains('dark'));
+            box.classList.toggle('dark', mode === 'dark');
         });
-        
-        const newParams = new URLSearchParams(window.location.search);
+      }
+    
+      // Check for the user's preferred mode in localStorage and apply it
+      document.addEventListener('DOMContentLoaded', () => {
+        const savedMode = localStorage.getItem('userMode');
+        if (savedMode) {
+            applyMode(savedMode);
+        }
+      });
+    
+      // Event listener for mode change
+      const chk = document.getElementById('chk');
+      chk.addEventListener('change', () => {
+        const mode = chk.checked ? 'dark' : 'light';
+        applyMode(mode);
+        localStorage.setItem('userMode', mode);
+      });
+
+      const newParams = new URLSearchParams(window.location.search);
         newParams.set('city', '{{ report.city }}');  // Make sure to use the correct template tag to get the city name
             window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
         
@@ -554,20 +714,57 @@
         const scrollTarget = document.getElementById('scroll-target');
         if (scrollTarget) {
           scrollTarget.scrollIntoView({ behavior: 'smooth' });
-    }
-      });
+        }
+      
     </script>
-  
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
-  
+
     <script>
-      // Assuming you have a JavaScript variable named report with icon_url property
+      // JavaScript to handle responsive menu toggle
+        const responsiveMenu = document.querySelector('.responsive-menu');
+        const headerRight = document.querySelector('.header-right ul');
+
+        responsiveMenu.addEventListener('click', () => {
+            headerRight.classList.toggle('active');
+        });
+
+    </script>
+
+    <script>
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        // Next/previous controls
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        // Thumbnail image controls
+        function currentSlide(n) {
+        showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+        if (n > slides.length) {slideIndex = 1}
+        if (n < 1) {slideIndex = slides.length}
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex-1].style.display = "block";
+        dots[slideIndex-1].className += " active";
+        }
+        setInterval(function () {
+          plusSlides(1); // Move to the next slide
+      }, 4000);
+    </script>
+    <script>
       var report = {
-        icon_url: "{{report.icon}}" // Example icon URL
+        icon_url: "{{report.icon}}"
       };
       // Get the image element
       var weatherIcon = document.getElementById("weather-icon");
@@ -577,7 +774,7 @@
     
     <script>
       var historical_data = {
-        weather_icon: "{{ historical_data.weather_icon }}" // Example icon URL
+        weather_icon: "{{ historical_data.weather_icon }}"
       };
       var hweatherIcon = document.getElementById("historical-weather-icon");
       var iconUrl = "https:" + historical_data.weather_icon;
@@ -586,7 +783,7 @@
     
     <script>
       var forecast_data = {
-        weather_icon: "{{ forecast_data.f_icon }}" // Example icon URL
+        weather_icon: "{{ forecast_data.f_icon }}"
       };
       var fweatherIcon = document.getElementById("forecast-weather-icon");
       var iconUrl = "https:" + forecast_data.weather_icon;
@@ -594,15 +791,17 @@
     </script>
 
     <script>
-        // Assuming your report.date is in the format "Date: 2023-08-19 11:51"
-        const reportDate = "{{ report.date }}"; // Replace this with your actual template tag
-        const parsedDate = new Date(reportDate);
-        const localHour = parsedDate.getHours();
-
-        // Add the local_hour parameter to the URL without reloading
-        const newParams = new URLSearchParams(window.location.search);
-        newParams.set('search_hour', localHour);
-        window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
-      </script>
+      // Assuming your report.date is in the format "Date: 2023-08-19 11:51"
+      const reportDate = "{{ report.date }}"; // Replace this with your actual template tag
+      const parsedDate = new Date(reportDate);
+      const localHour = parsedDate.getHours();
+    
+      // Add the local_hour parameter to the URL without reloading
+      const newParams = new URLSearchParams(window.location.search);
+      newParams.set('search_hour', localHour);
+      window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
+    </script>
+    
+    
 </body>
 </html>

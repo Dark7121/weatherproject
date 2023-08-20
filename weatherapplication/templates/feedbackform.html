@@ -311,6 +311,56 @@ body.dark header {
     }
   }
 
+  .feedback-box {
+    padding: 1px;
+    border-radius: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .input-group {
+    flex-direction: column;
+}
+
+.input-group label {
+    font-weight: bold;
+}
+
+.input-group input {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#message {
+    resize: vertical;
+    height: 150px;
+}
+
+.circle {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thank-you-message p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  margin: 0;
+  font-size: 22px;
+  color: #7BD9F6;
+  font-style: Arial, sans-serif;
+  font-weight: bold;
+}
+
 </style>
 </head>
 <body class="">
@@ -380,46 +430,70 @@ body.dark header {
     </div>
   </header>
   <div class="bgimg">
-    <img class="bgimg" src="{{ STATIC_URL }}/static/img/thunder.jpg">
+    <img class="bgimg" src="{{ STATIC_URL }}/static/img/sunny.jpg">
     <div class="middle">
-      <h1>COMING SOON</h1>
-      <hr>
-        <p id="demo" style="font-size:30px"></p>
+      <div id="feedbackForm" class="feedback-box">
+          <h1>Feedback Form</h1>
+          <form action="#" method="post">
+              {% csrf_token %}
+              <div class="input-group">
+                <label for="firstname">First Name:</label>
+                <input type="text" id="firstname" name="firstname" required><br><br>
+              </div>
+              <div class="input-group">
+                <label for="lastname">Last Name:</label>
+                <input type="text" id="lastname" name="lastname" required><br><br>
+              </div>
+              <div class="input-group">
+                <label for="email">Email Id:</label>
+                <input type="email" id="email" name="email" required><br><br>
+              </div>
+              <div class="input-group">
+                <label for="message">Your Message:</label><br>
+                <textarea id="message" name="message" rows="6" cols="50" required></textarea><br><br>
+              </div>
+              <button type="submit" class="btn btn-green">Submit</button>
+          </form>
+      </div>
+      <div class="circle" id="circleContainer" style="display: none;">
+        <div class="thank-you-message" id="thankYouMessage">
+          <p>Thank you for your feedback!<br><span id="countdown">5</span> seconds</p>
+        </div>
+      </div>
     </div>
   </div>
   <footer class="bottom-down">
     <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
   </footer>
+
   <script>
-  // Set the date we're counting down to
-  var countDownDate = new Date("Aug 27, 2023 10:30:00").getTime();
-
-  // Update the count down every 1 second
-  var countdownfunction = setInterval(function() {
-
-    // Get todays date and time
-    var now = new Date().getTime();
-    
-    // Find the distance between now an the count down date
-    var distance = countDownDate - now;
-    
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-    // Output the result in an element with id="demo"
-    document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-    + minutes + "m " + seconds + "s ";
-    
-    // If the count down is over, write some text 
-    if (distance < 0) {
-      clearInterval(countdownfunction);
-      document.getElementById("demo").innerHTML = "EXPIRED";
-    }
-  }, 1000);
+    document.addEventListener('DOMContentLoaded', function () {
+      const feedbackForm = document.getElementById("feedbackForm");
+      const circleContainer = document.getElementById("circleContainer");
+      const countdownSpan = document.getElementById("countdown");
+  
+      feedbackForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+  
+        feedbackForm.style.display = "none";
+        circleContainer.style.display = "block";
+  
+        let countdown = 5;
+  
+        const timerInterval = setInterval(function () {
+          countdown--;
+          countdownSpan.textContent = countdown;
+          if (countdown <= 0) {
+            clearInterval(timerInterval);
+            window.location.href = "/"; // Replace with your actual home page URL
+          }
+        }, 1000); // Update every 1 second
+      });
+  
+      // Your other scripts here...
+    });
   </script>
+  
   <script>
     function applyMode(mode) {
       const body = document.body;
