@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from environs import Env
 import dj_database_url
-
+from decouple import config
 import os
 env = Env()
 env.read_env()
@@ -147,3 +147,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True  # Change this to a more restricted setting in production
 
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587  # The appropriate port for your email service
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'abhijitdas7121@gmail.com'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='', cast=str)

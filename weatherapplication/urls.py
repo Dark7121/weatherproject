@@ -10,4 +10,5 @@ urlpatterns = [
     path('log-in', views.login, name='login'),
     path('search', views.search_result, name='search'),
     path('feedback', views.feedback, name='feedback'),
+    path('submit_feedback/', views.submit_feedback, name='submit_feedback'),
 ]

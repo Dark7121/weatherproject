@@ -434,7 +434,7 @@ body.dark header {
     <div class="middle">
       <div id="feedbackForm" class="feedback-box">
           <h1>Feedback Form</h1>
-          <form action="#" method="post">
+          <form action="{% url 'submit_feedback' %}" method="post">
               {% csrf_token %}
               <div class="input-group">
                 <label for="firstname">First Name:</label>
@@ -542,6 +542,15 @@ body.dark header {
         scrollTarget.scrollIntoView({ behavior: 'smooth' });
       }
     
+  </script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G6232ES7QB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-G6232ES7QB');
   </script>
 
 
