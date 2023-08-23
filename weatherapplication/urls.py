@@ -8,7 +8,8 @@ urlpatterns = [
     path('historical', views.historical_weather, name='historical weather'),
     path('sign-up', views.signup, name='signup'),
     path('log-in', views.login, name='login'),
+    path('log-out', views.logout, name='logout'),
     path('search', views.search_result, name='search'),
     path('feedback', views.feedback, name='feedback'),
-    path('submit_feedback/', views.submit_feedback, name='submit_feedback'),
+    path('submit_feedback', views.submit_feedback, name='submit_feedback'),
 ]

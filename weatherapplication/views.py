@@ -382,25 +382,21 @@ def signup(request):
 def login(request):
     return render(request, 'login.html') 
 
+def logout(request):
+    return render(request, 'home.html')
+
 def feedback(request):
     return render(request, 'feedbackform.html')
 
 def submit_feedback(request):
     if request.method == 'POST':
-        first_name = request.POST.get('firstname')
-        last_name = request.POST.get('lastname')
-        email = request.POST.get('email')
-        message = request.POST.get('message')
-
-        # Save feedback to the database
-        feedback = Feedback(first_name=first_name, last_name=last_name, email=email, message=message)
-        feedback.save()
-
-        # Send email
-        subject = 'New Feedback Submission'
-        message = f"Name: {first_name} {last_name}\nEmail: {email}\nMessage: {message}"
-        from_email = 'your-email@example.com'
-        recipient_list = ['your-email@example.com']  # Replace with your email address
-        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-
-        return None
+        try:
+            firstname = request.POST.get('firstname')
+            lastname = request.POST.get('lastname')
+            email = request.POST.get('email')
+            message = request.POST.get('message')
+            Feedback.objects.create(firstname=firstname, lastname=lastname, email=email, message=message)
+            return redirect('/')
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

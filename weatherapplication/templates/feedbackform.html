@@ -434,7 +434,7 @@ body.dark header {
     <div class="middle">
       <div id="feedbackForm" class="feedback-box">
           <h1>Feedback Form</h1>
-          <form action="{% url 'submit_feedback' %}" method="post">
+          <form id="Feedback" action="{% url 'submit_feedback' %}" method="post">
               {% csrf_token %}
               <div class="input-group">
                 <label for="firstname">First Name:</label>
@@ -466,6 +466,8 @@ body.dark header {
     <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
   </footer>
 
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const feedbackForm = document.getElementById("feedbackForm");
@@ -473,25 +475,56 @@ body.dark header {
       const countdownSpan = document.getElementById("countdown");
   
       feedbackForm.addEventListener("submit", function (event) {
-        event.preventDefault();
+          event.preventDefault();
   
-        feedbackForm.style.display = "none";
-        circleContainer.style.display = "block";
+          feedbackForm.style.display = "none";
+          circleContainer.style.display = "block";
   
-        let countdown = 5;
+          let countdown = 5;
   
-        const timerInterval = setInterval(function () {
-          countdown--;
-          countdownSpan.textContent = countdown;
-          if (countdown <= 0) {
-            clearInterval(timerInterval);
-            window.location.href = "/"; // Replace with your actual home page URL
-          }
-        }, 1000); // Update every 1 second
+          const timerInterval = setInterval(function () {
+              countdown--;
+              countdownSpan.textContent = countdown;
+              if (countdown <= 0) {
+                  clearInterval(timerInterval);
+                  submitFeedback();
+              }
+          }, 1000);
       });
   
-      // Your other scripts here...
-    });
+      function submitFeedback() {
+          const formData = $(feedbackForm).serialize();
+          $.ajax({
+              type: "POST",
+              url: "{% url 'submit_feedback' %}",
+              data: formData,
+              beforeSend: function (xhr, settings) {
+                  xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+              },
+              success: function (response) {
+                  window.location.href = "/";
+              },
+              error: function (error) {
+                  console.error("Error submitting feedback:", error);
+              }
+          });
+      }
+
+      function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = jQuery.trim(cookies[i]);
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+        }
+      });
   </script>
   
   <script>
