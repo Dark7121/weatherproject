@@ -90,6 +90,8 @@ header {
 
 .header-right li {
     margin-right: 20px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .header-right li a {
@@ -137,6 +139,7 @@ header {
     min-width: 150px;
     border-radius: 5px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    transform: translate(-150px, -30px);
 }
 
 .dropdown-content a {
@@ -464,7 +467,7 @@ body.dark .about-us-section{
 <body>
     <header>
         <div class="header-left">
-            <a href="#"><img class="portfolio-icon" src="{{ STATIC_URL }}/static/img/windy.jpg"></a>
+            <a href="/"><img class="portfolio-icon" src="{{ STATIC_URL }}/static/img/windy.jpg"></a>
               <nav>
                 <ul>
                   <li>
@@ -497,10 +500,10 @@ body.dark .about-us-section{
                 </li>
                 <li><h3><a href="#about-us-section">About Us</a></h3></li>
                 {% if user.is_authenticated %}
-                    <li class="user-auth">
+                    <li class="dropdown">
                         <h3><a href="#">Welcome, {{ user.username }}</a></h3>
                         <div class="dropdown-content">
-                            <h3><a href="{% url 'logout' %}">Logout</a></h3>
+                          <h3><a href="{% url 'logout' %}">Logout</a></h3>
                         </div>
                     </li>
                 {% else %}
@@ -651,7 +654,6 @@ body.dark .about-us-section{
         
         body.classList.toggle('dark', mode === 'dark');
         
-        // Update position of the .ball element
         if (mode === 'dark') {
             ball.style.transform = 'translateX(21px)';
         } else {
@@ -664,7 +666,7 @@ body.dark .about-us-section{
         });
       }
     
-      // Check for the user's preferred mode in localStorage and apply it
+
       document.addEventListener('DOMContentLoaded', () => {
         const savedMode = localStorage.getItem('userMode');
         if (savedMode) {
@@ -681,7 +683,7 @@ body.dark .about-us-section{
       });
 
       const newParams = new URLSearchParams(window.location.search);
-        newParams.set('city', '{{ report.city }}');  // Make sure to use the correct template tag to get the city name
+        newParams.set('city', '{{ report.city }}');  
             window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
         
 
@@ -694,13 +696,18 @@ body.dark .about-us-section{
     </script>
 
     <script>
-      // JavaScript to handle responsive menu toggle
         const responsiveMenu = document.querySelector('.responsive-menu');
         const headerRight = document.querySelector('.header-right ul');
 
         responsiveMenu.addEventListener('click', () => {
             headerRight.classList.toggle('active');
         });
+
+        window.addEventListener('resize', () => {
+          if (window.innerWidth > 768) {
+              headerRight.classList.remove('active');
+          }
+      });
 
     </script>
 

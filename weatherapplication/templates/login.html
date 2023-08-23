@@ -89,7 +89,9 @@ header {
 }
 
 .header-right li {
-    margin-right: 20px;
+  margin-right: 20px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .header-right li a {
@@ -128,7 +130,7 @@ header {
     position: relative;
   }
 
-.dropdown-content {
+  .dropdown-content {
     display: none;
     position: absolute;
     top: 100%;
@@ -137,6 +139,7 @@ header {
     min-width: 150px;
     border-radius: 5px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    transform: translate(-150px, -30px);
 }
 
 .dropdown-content a {
@@ -309,7 +312,72 @@ body.dark header {
         cursor: pointer;
         z-index: 3;
     }
+
+    .weather-container {
+        flex-direction: column; /* Stack weather boxes vertically */
+    }
+
+    .about-us-section {
+        /* Display the About Us section in responsive view */
+        display: block;
+        margin-top: 20px;
+        padding: 30px;
+    }
+
+    .profiles-container {
+        flex-direction: column; /* Stack profile boxes vertically */
+        padding: 10px;
+    }
+    
+    .profile-box {
+        margin: 10px;
+    }
   }
+
+  .login-box {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 850px;
+    margin: 0 auto;
+  }
+
+  .input-group {
+    flex-direction: column;
+}
+
+.input-group label {
+    font-weight: bold;
+}
+
+.input-group input {
+    padding: 8px;
+    height: 55px;
+    width: 300px;
+    border-radius: 15px;
+    border: 10px solid #ccc;
+}
+
+.error {
+  color: #fff;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.loginsubmit{
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  background-color: #009E60;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.loginsubmit:hover {
+  background-color: #7CFC00;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.6);
+}
 
 </style>
 </head>
@@ -349,11 +417,11 @@ body.dark header {
             </li>
             <li><h3><a href="/#about-us-section">About Us</a></h3></li>
             {% if user.is_authenticated %}
-                <li class="user-auth">
-                    <h3><a href="#">Welcome, {{ user.username }}</a></h3>
-                    <div class="dropdown-content">
-                        <h3><a href="{% url 'logout' %}">Logout</a></h3>
-                    </div>
+                <li class="dropdown">
+                  <h3><a href="#">Welcome, {{ user.username }}</a></h3>
+                  <div class="dropdown-content">
+                    <h3><a href="{% url 'logout' %}">Logout</a></h3>
+                  </div>
                 </li>
             {% else %}
                 <li>
@@ -380,46 +448,47 @@ body.dark header {
     </div>
   </header>
   <div class="bgimg">
-    <img class="bgimg" src="{{ STATIC_URL }}/static/img/thunder.jpg">
+    <img class="bgimg" src="{{ STATIC_URL }}/static/img/full-sunny.jpg">
     <div class="middle">
-      <h1>COMING SOON</h1>
-      <hr>
-        <p id="demo" style="font-size:30px"></p>
+      <div class="login-box">
+          <h1>Log In</h1>
+          <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.GET.next }}">
+              <div class="input-group">
+                <label for="usernameoremail"></label>
+                <input type="text" id="usernameoremail"name="usernameoremail" placeholder="Username or Email Id" required><br><br>
+              </div>
+              <div class="input-group">
+                <label for="password"></label>
+                <input type="password" id="password" name="password" placeholder="Password" required><br><br>
+              </div>
+              <button type="submit" class="loginsubmit">Log In</button>
+          </form>
+          <p class="error">{{error_message}}</p>
+      </div>
     </div>
   </div>
   <footer class="bottom-down">
     <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
   </footer>
+
   <script>
-  // Set the date we're counting down to
-  var countDownDate = new Date("Aug 27, 2023 10:30:00").getTime();
+    const responsiveMenu = document.querySelector('.responsive-menu');
+    const headerRight = document.querySelector('.header-right ul');
 
-  // Update the count down every 1 second
-  var countdownfunction = setInterval(function() {
+    responsiveMenu.addEventListener('click', () => {
+        headerRight.classList.toggle('active');
+    });
 
-    // Get todays date and time
-    var now = new Date().getTime();
-    
-    // Find the distance between now an the count down date
-    var distance = countDownDate - now;
-    
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-    // Output the result in an element with id="demo"
-    document.getElementById("demo").innerHTML = days + "d " + hours + "h "
-    + minutes + "m " + seconds + "s ";
-    
-    // If the count down is over, write some text 
-    if (distance < 0) {
-      clearInterval(countdownfunction);
-      document.getElementById("demo").innerHTML = "EXPIRED";
-    }
-  }, 1000);
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+          headerRight.classList.remove('active');
+      }
+  });
+
   </script>
+
   <script>
     function applyMode(mode) {
       const body = document.body;
@@ -456,13 +525,7 @@ body.dark header {
       applyMode(mode);
       localStorage.setItem('userMode', mode);
     });
-
-    const newParams = new URLSearchParams(window.location.search);
-      newParams.set('city', '{{ report.city }}');  // Make sure to use the correct template tag to get the city name
-          window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
       
-
-      // Scroll to the target element
       const scrollTarget = document.getElementById('scroll-target');
       if (scrollTarget) {
         scrollTarget.scrollIntoView({ behavior: 'smooth' });

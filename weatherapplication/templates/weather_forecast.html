@@ -89,7 +89,9 @@ header {
 }
 
 .header-right li {
-    margin-right: 20px;
+  margin-right: 20px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .header-right li a {
@@ -128,7 +130,7 @@ header {
     position: relative;
   }
 
-.dropdown-content {
+  .dropdown-content {
     display: none;
     position: absolute;
     top: 100%;
@@ -137,6 +139,7 @@ header {
     min-width: 150px;
     border-radius: 5px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    transform: translate(-150px, -30px);
 }
 
 .dropdown-content a {
@@ -349,11 +352,11 @@ body.dark header {
             </li>
             <li><h3><a href="/#about-us-section">About Us</a></h3></li>
             {% if user.is_authenticated %}
-                <li class="user-auth">
-                    <h3><a href="#">Welcome, {{ user.username }}</a></h3>
-                    <div class="dropdown-content">
-                        <h3><a href="{% url 'logout' %}">Logout</a></h3>
-                    </div>
+                <li class="dropdown">
+                  <h3><a href="#">Welcome, {{ user.username }}</a></h3>
+                  <div class="dropdown-content">
+                    <h3><a href="{% url 'logout' %}">Logout</a></h3>
+                  </div>
                 </li>
             {% else %}
                 <li>
@@ -390,30 +393,40 @@ body.dark header {
   <footer class="bottom-down">
     <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
   </footer>
+
   <script>
-  // Set the date we're counting down to
+    const responsiveMenu = document.querySelector('.responsive-menu');
+    const headerRight = document.querySelector('.header-right ul');
+
+    responsiveMenu.addEventListener('click', () => {
+        headerRight.classList.toggle('active');
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+          headerRight.classList.remove('active');
+      }
+  });
+
+  </script>
+
+  <script>
   var countDownDate = new Date("Aug 27, 2023 10:30:00").getTime();
 
-  // Update the count down every 1 second
   var countdownfunction = setInterval(function() {
 
-    // Get todays date and time
     var now = new Date().getTime();
     
-    // Find the distance between now an the count down date
     var distance = countDownDate - now;
     
-    // Time calculations for days, hours, minutes and seconds
     var days = Math.floor(distance / (1000 * 60 * 60 * 24));
     var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
     
-    // Output the result in an element with id="demo"
     document.getElementById("demo").innerHTML = days + "d " + hours + "h "
     + minutes + "m " + seconds + "s ";
     
-    // If the count down is over, write some text 
     if (distance < 0) {
       clearInterval(countdownfunction);
       document.getElementById("demo").innerHTML = "EXPIRED";
@@ -428,7 +441,6 @@ body.dark header {
       
       body.classList.toggle('dark', mode === 'dark');
       
-      // Update position of the .ball element
       if (mode === 'dark') {
           ball.style.transform = 'translateX(21px)';
       } else {
@@ -441,7 +453,6 @@ body.dark header {
       });
     }
   
-    // Check for the user's preferred mode in localStorage and apply it
     document.addEventListener('DOMContentLoaded', () => {
       const savedMode = localStorage.getItem('userMode');
       if (savedMode) {
@@ -449,7 +460,6 @@ body.dark header {
       }
     });
   
-    // Event listener for mode change
     const chk = document.getElementById('chk');
     chk.addEventListener('change', () => {
       const mode = chk.checked ? 'dark' : 'light';
@@ -458,11 +468,10 @@ body.dark header {
     });
 
     const newParams = new URLSearchParams(window.location.search);
-      newParams.set('city', '{{ report.city }}');  // Make sure to use the correct template tag to get the city name
+      newParams.set('city', '{{ report.city }}'); 
           window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
       
 
-      // Scroll to the target element
       const scrollTarget = document.getElementById('scroll-target');
       if (scrollTarget) {
         scrollTarget.scrollIntoView({ behavior: 'smooth' });

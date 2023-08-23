@@ -89,7 +89,9 @@ header {
 }
 
 .header-right li {
-    margin-right: 20px;
+  margin-right: 20px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .header-right li a {
@@ -128,7 +130,7 @@ header {
     position: relative;
   }
 
-.dropdown-content {
+  .dropdown-content {
     display: none;
     position: absolute;
     top: 100%;
@@ -137,6 +139,7 @@ header {
     min-width: 150px;
     border-radius: 5px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    transform: translate(-150px, -30px);
 }
 
 .dropdown-content a {
@@ -399,11 +402,11 @@ body.dark header {
             </li>
             <li><h3><a href="/#about-us-section">About Us</a></h3></li>
             {% if user.is_authenticated %}
-                <li class="user-auth">
-                    <h3><a href="#">Welcome, {{ user.username }}</a></h3>
-                    <div class="dropdown-content">
-                        <h3><a href="{% url 'logout' %}">Logout</a></h3>
-                    </div>
+                <li class="dropdown">
+                  <h3><a href="#">Welcome, {{ user.username }}</a></h3>
+                  <div class="dropdown-content">
+                    <h3><a href="{% url 'logout' %}">Logout</a></h3>
+                  </div>
                 </li>
             {% else %}
                 <li>
@@ -465,6 +468,22 @@ body.dark header {
   <footer class="bottom-down">
     <p>Copyright &copy; 2023 Abhijit Das. All Rights Reserved.</p>
   </footer>
+
+  <script>
+    const responsiveMenu = document.querySelector('.responsive-menu');
+    const headerRight = document.querySelector('.header-right ul');
+
+    responsiveMenu.addEventListener('click', () => {
+        headerRight.classList.toggle('active');
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+          headerRight.classList.remove('active');
+      }
+  });
+
+  </script>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

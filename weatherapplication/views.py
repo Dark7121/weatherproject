@@ -1,15 +1,19 @@
 from django.shortcuts import render
 import requests
-from urllib import request
 from datetime import datetime, timedelta
-import pytz
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import send_mail
 from django.shortcuts import render, redirect
-from .models import Feedback
+from django.urls import reverse
+from .models import Login, Feedback
 from decouple import config
+from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models import Q
+import re
 
 
 NEW_API = '409bbc3d16674decb50192843230708'
@@ -57,7 +61,8 @@ def get_location_info(latitude, longitude, api_key):
                     'postcode': postcode
                 }
     return None
-        
+
+@login_required(login_url='/log-in')
 def search_result(request):
     report = {}
     forecast_data = {}
@@ -65,14 +70,12 @@ def search_result(request):
     show_popup = False
     search_hour = 0
     
-    if request.method == 'POST':
+    try:
+        request.method == 'POST'
         city_name = request.POST.get('city')
-    else:
-        try:
-            city_name = request.POST.get('city')
-        except (KeyError, ValueError):
-            show_popup = True
-            city_name = "Kolkata"
+    except (KeyError, ValueError):
+        show_popup = True
+        city_name = "Kolkata"
 
     if city_name:
         weather_url = f"https://api.weatherapi.com/v1/current.json?key={NEW_API}&q={city_name}&aqi=yes"
@@ -377,13 +380,83 @@ def weather_forecast(request):
     return render(request, 'weather_forecast.html')
 
 def signup(request):
+    next_page = request.POST.get('next')
+    password_pattern = (r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=]).{8,20}$')
+    if request.method == 'POST':
+        try:
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            confirmpassword = request.POST.get('confirmpassword')
+            if password != confirmpassword:
+                error_message = "Passwords do not match. Please try again."
+                return render(request, 'signup.html', {'error_message': error_message})
+            
+            elif not re.match(password_pattern, password): 
+                error_message = "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character."
+                return render(request, 'signup.html', {'error_message': error_message})
+                
+            elif User.objects.filter(Q(username__iexact=username)).exists() and Signup.objects.filter(Q(email__iexact=email)).exists():
+                error_message = "Username and email both already exist. Please try again."
+                return render(request, 'signup.html', {'error_message': error_message})
+
+            elif User.objects.filter(Q(username__iexact=username)).exists():
+                error_message = "Username already exists. Please try again."
+                return render(request, 'signup.html', {'error_message': error_message})
+                
+            elif User.objects.filter(Q(email__iexact=email)).exists():
+                error_message = "Email already exists. Please try again."
+                return render(request, 'signup.html', {'error_message': error_message})
+                
+            else:
+                User.objects.create_user(username=username, email=email, password=password)
+                if next_page:
+                    return redirect(next_page)
+                else:
+                    return redirect('login')
+            
+        except Exception as e:
+            error_message = str(e)
+            return render(request, 'signup.html', {'error_message': error_message})
     return render(request, 'signup.html')
 
-def login(request):
+def login_view(request):
+    next_page = request.POST.get('next')
+    if request.method == 'POST':
+        try:
+            usernameoremail = request.POST.get('usernameoremail') 
+            password = request.POST.get('password')
+            
+            if '@' in usernameoremail:
+                user = User.objects.filter(email=usernameoremail).first()
+                if user:
+                    user = authenticate(request, username=user.username, password=password)
+            else:
+                user = authenticate(request, username=usernameoremail, password=password)
+                
+            if user is not None:
+                auth_login(request, user)
+                if next_page:
+                    return redirect(next_page)
+                else:
+                    return redirect('home')
+            else:
+                try:
+                    user = User.objects.get(username=usernameoremail)
+                    error_message = "Invalid Password. Please try again."
+                except User.DoesNotExist:
+                    error_message = "Invalid Username. Please try again."
+                return render(request, 'login.html', {'error_message': error_message})
+
+        except Exception as e:
+            error_message = str(e)
+            return render(request, 'login.html', {'error_message': error_message})
     return render(request, 'login.html') 
 
-def logout(request):
-    return render(request, 'home.html')
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect(reverse('home'))
 
 def feedback(request):
     return render(request, 'feedbackform.html')

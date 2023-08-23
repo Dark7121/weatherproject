@@ -89,7 +89,9 @@ header {
 }
 
 .header-right li {
-    margin-right: 20px;
+  margin-right: 20px;
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .header-right li a {
@@ -128,7 +130,7 @@ header {
     position: relative;
   }
 
-.dropdown-content {
+  .dropdown-content {
     display: none;
     position: absolute;
     top: 100%;
@@ -137,6 +139,7 @@ header {
     min-width: 150px;
     border-radius: 5px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    transform: translate(-150px, -30px);
 }
 
 .dropdown-content a {
@@ -464,7 +467,7 @@ body.dark .about-us-section{
 <body>
     <header>
         <div class="header-left">
-            <a href="#"><img class="portfolio-icon" src="{{ STATIC_URL }}/static/img/windy.jpg"></a>
+            <a href="/"><img class="portfolio-icon" src="{{ STATIC_URL }}/static/img/windy.jpg"></a>
               <nav>
                 <ul>
                   <li>
@@ -497,11 +500,11 @@ body.dark .about-us-section{
                 </li>
                 <li><h3><a href="#about-us-section">About Us</a></h3></li>
                 {% if user.is_authenticated %}
-                    <li class="user-auth">
-                        <h3><a href="#">Welcome, {{ user.username }}</a></h3>
-                        <div class="dropdown-content">
-                            <h3><a href="{% url 'logout' %}">Logout</a></h3>
-                        </div>
+                    <li class="dropdown">
+                      <h3><a href="#">Welcome, {{ user.username }}</a></h3>
+                      <div class="dropdown-content">
+                        <h3><a href="{% url 'logout' %}">Logout</a></h3>
+                      </div>
                     </li>
                 {% else %}
                     <li>
@@ -663,7 +666,7 @@ body.dark .about-us-section{
   
           closeButton.addEventListener("click", function() {
               popupContainer.style.display = "none";
-              window.location.href = "/";  // Redirect to the home page
+              window.location.href = "/";  
           });
       });
   </script>
@@ -675,8 +678,7 @@ body.dark .about-us-section{
         const ball = document.querySelector('.ball');
         
         body.classList.toggle('dark', mode === 'dark');
-        
-        // Update position of the .ball element
+
         if (mode === 'dark') {
             ball.style.transform = 'translateX(21px)';
         } else {
@@ -689,7 +691,6 @@ body.dark .about-us-section{
         });
       }
     
-      // Check for the user's preferred mode in localStorage and apply it
       document.addEventListener('DOMContentLoaded', () => {
         const savedMode = localStorage.getItem('userMode');
         if (savedMode) {
@@ -697,7 +698,6 @@ body.dark .about-us-section{
         }
       });
     
-      // Event listener for mode change
       const chk = document.getElementById('chk');
       chk.addEventListener('change', () => {
         const mode = chk.checked ? 'dark' : 'light';
@@ -706,11 +706,10 @@ body.dark .about-us-section{
       });
 
       const newParams = new URLSearchParams(window.location.search);
-        newParams.set('city', '{{ report.city }}');  // Make sure to use the correct template tag to get the city name
+        newParams.set('city', '{{ report.city }}');
             window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
         
 
-        // Scroll to the target element
         const scrollTarget = document.getElementById('scroll-target');
         if (scrollTarget) {
           scrollTarget.scrollIntoView({ behavior: 'smooth' });
@@ -719,7 +718,6 @@ body.dark .about-us-section{
     </script>
 
     <script>
-      // JavaScript to handle responsive menu toggle
         const responsiveMenu = document.querySelector('.responsive-menu');
         const headerRight = document.querySelector('.header-right ul');
 
@@ -727,18 +725,22 @@ body.dark .about-us-section{
             headerRight.classList.toggle('active');
         });
 
+        window.addEventListener('resize', () => {
+          if (window.innerWidth > 768) {
+              headerRight.classList.remove('active');
+          }
+      });
+
     </script>
 
     <script>
         let slideIndex = 1;
         showSlides(slideIndex);
 
-        // Next/previous controls
         function plusSlides(n) {
             showSlides(slideIndex += n);
         }
 
-        // Thumbnail image controls
         function currentSlide(n) {
         showSlides(slideIndex = n);
         }
@@ -759,14 +761,13 @@ body.dark .about-us-section{
         dots[slideIndex-1].className += " active";
         }
         setInterval(function () {
-          plusSlides(1); // Move to the next slide
+          plusSlides(1); 
       }, 4000);
     </script>
     <script>
       var report = {
         icon_url: "{{report.icon}}"
       };
-      // Get the image element
       var weatherIcon = document.getElementById("weather-icon");
       var iconUrl = "https:" + report.icon_url;
       weatherIcon.src = iconUrl;
@@ -791,12 +792,10 @@ body.dark .about-us-section{
     </script>
 
     <script>
-      // Assuming your report.date is in the format "Date: 2023-08-19 11:51"
-      const reportDate = "{{ report.date }}"; // Replace this with your actual template tag
+      const reportDate = "{{ report.date }}";
       const parsedDate = new Date(reportDate);
       const localHour = parsedDate.getHours();
     
-      // Add the local_hour parameter to the URL without reloading
       const newParams = new URLSearchParams(window.location.search);
       newParams.set('search_hour', localHour);
       window.history.replaceState({}, '', `${window.location.pathname}?${newParams}`);
