@@ -62,7 +62,7 @@ def get_location_info(latitude, longitude, api_key):
                 }
     return None
 
-@login_required(login_url='/log-in')
+#@login_required(login_url='/log-in')
 def search_result(request):
     report = {}
     forecast_data = {}
